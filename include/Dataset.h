@@ -7,8 +7,8 @@
 
 class Dataset {
 public:
-    Dataset(std::string fileName, int classCol);
-    std::map<std::string, SimpleDataset> getClassDatasets();
+    Dataset(const std::string& fileName, int classCol);
+    std::map<std::string, SimpleDataset> getClassDatasets() const;
 private:
     std::map<std::string, SimpleDataset> classDatasets_;
 };
