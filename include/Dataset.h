@@ -9,6 +9,8 @@ class Dataset {
 public:
     Dataset(const std::string& fileName, int classCol);
     std::map<std::string, SimpleDataset> getClassDatasets() const;
+    size_t numberOfColumns() const;
+
 private:
     std::map<std::string, SimpleDataset> classDatasets_;
 };

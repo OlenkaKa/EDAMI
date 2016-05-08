@@ -1,0 +1,15 @@
+1.8,80,white,brown,poland
+1.9,85,yellow,blond,china
+1.8,75,black,black,usa
+1.7,70,white,blond,usa
+1.8,70,yellow,black,china
+2.0,80,white,brown,poland
+1.6,100,white,black,usa
+2.1,95,white,black,poland
+1.8,65,yellow,blond,china
+1.7,80,yellow,black,china
+1.8,105,black,blond,usa
+1.9,80,white,black,poland
+1.5,80,white,blond,poland
+1.9,115,black,black,usa
+1.7,80,white,blond,poland

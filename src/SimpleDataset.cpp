@@ -18,3 +18,7 @@ size_t SimpleDataset::size() const {
     return rows_.size();
 }
 
+size_t SimpleDataset::numberOfColumns() const {
+    return rows_.empty() ? 0 : rows_.front().size();
+}
+

@@ -45,3 +45,6 @@ std::map<std::string, SimpleDataset> Dataset::getClassDatasets() const {
     return classDatasets_;
 }
 
+size_t Dataset::numberOfColumns() const {
+    return classDatasets_.empty() ? 0 : (*classDatasets_.begin()).second.numberOfColumns();
+}

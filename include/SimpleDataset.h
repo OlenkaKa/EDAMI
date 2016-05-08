@@ -14,6 +14,8 @@ public:
     void addRow(const Row& row);
     std::list<Row> getRows() const;
     size_t size() const;
+    size_t numberOfColumns() const;
+
 private:
     std::list<Row> rows_;
 };

@@ -6,9 +6,9 @@ ADD_DEFINITIONS (
 )
 
 ADD_EXECUTABLE (main
-    main.cpp
-    Attribute.cpp
-    Dataset.cpp
-    SimpleDataset.cpp
-)
+        main.cpp
+        Attribute.cpp
+        Dataset.cpp
+        SimpleDataset.cpp
+        GranuleCalculator.cpp)
 
