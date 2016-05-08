@@ -10,12 +10,12 @@ public:
         NUMERICAL
     };
    
-    Attribute(AttributeType type, std::string value);
-    Attribute(AttributeType type, double value);
-    AttributeType getType();
-    boost::variant<std::string, double> getValue();
+    Attribute(const std::string& value);
+    Attribute(double value);
+    AttributeType getType() const;
+    boost::variant<std::string, double> getValue() const;
     
-    static Attribute createAttribute(std::string);
+    static Attribute createAttribute(const std::string& str);
     
 private:
     AttributeType type_;

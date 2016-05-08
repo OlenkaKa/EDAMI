@@ -4,28 +4,28 @@
 using namespace std;
 using namespace boost;
 
-Attribute::Attribute(AttributeType type, string value):
-        type_(type), value_(value) {
+Attribute::Attribute(const string& value):
+        type_(SIMPLE), value_(value) {
 }
 
-Attribute::Attribute(AttributeType type, double value):
-        type_(type), value_(value) {
+Attribute::Attribute(double value):
+        type_(NUMERICAL), value_(value) {
 }
 
-Attribute::AttributeType Attribute::getType() {
+Attribute::AttributeType Attribute::getType() const {
     return type_;
 }
 
-variant<string, double> Attribute::getValue() {
+variant<string, double> Attribute::getValue() const {
     return value_;
 }
 
-Attribute Attribute::createAttribute(std::string str) {
+Attribute Attribute::createAttribute(const std::string& str) {
     try {
         double num = lexical_cast<double>(str);
-        return Attribute(NUMERICAL, num);
+        return Attribute(num);
     } catch (bad_lexical_cast &e) {
-        return Attribute(SIMPLE, str);
+        return Attribute(str);
     }
 }
 

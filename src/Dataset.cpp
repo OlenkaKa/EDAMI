@@ -6,7 +6,7 @@ using namespace std;
 using namespace boost;
 
 
-Dataset::Dataset(string fileName, int classCol) {
+Dataset::Dataset(const string& fileName, int classCol) {
     ifstream file;
     string line;
     file.open(fileName);
@@ -31,7 +31,7 @@ Dataset::Dataset(string fileName, int classCol) {
         }
         
         // remaining values from row
-        for (int i = classCol + 1; getline(lineStream, value, ',') ; ++i) {
+        while (getline(lineStream, value, ',')) {
             row.push_back(Attribute::createAttribute(value));
         }
         
@@ -41,7 +41,7 @@ Dataset::Dataset(string fileName, int classCol) {
     file.close();
 }
 
-std::map<std::string, SimpleDataset> Dataset::getClassDatasets() {
+std::map<std::string, SimpleDataset> Dataset::getClassDatasets() const {
     return classDatasets_;
 }
 
