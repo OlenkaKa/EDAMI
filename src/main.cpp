@@ -1,4 +1,5 @@
 #include "Dataset.h"
+#include "CrossValidation.h"
 #include "MinimalSizeStrategy.h"
 #include <iostream>
 #include <GranuleCalculator.h>
@@ -24,38 +25,18 @@ void print(const GranuleSet& granuleSet) {
     }
 }
 
+void print(const SimpleDataset& dataset);
+void print(const Dataset& dataset);
+
 int main(int argc, char** argv) {
-//    string file = "/mnt/D/New/Semestr 10/EDAMI/project/datasets/wine.data";
     string file = "people.txt";
     cout << file << endl;
 
     string simpleAttr;
     double numericalAttr;
 
-//    Dataset dataset(file, 0);
     Dataset dataset(file, 4); // people.txt
-    for (auto &it: dataset.getClassDatasets()) {
-        cout << "-- class: " << it.first << ", rows:" << endl;
-        SimpleDataset classDataset = it.second;
-        for (auto &row: classDataset.getRows()) {
-            for (auto &attr: row) {
-                switch (attr.getType()) {
-                    case Attribute::SIMPLE:
-                        simpleAttr = get<string>(attr.getValue());
-                        cout << simpleAttr;
-                        break;
-                    case Attribute::NUMERICAL:
-                        numericalAttr = get<double>(attr.getValue());
-                        cout << "!" << numericalAttr;
-                        break;
-                    default:
-                        break;
-                }
-                cout << ' ';
-            }
-            cout << endl;
-        }
-    }
+    print(dataset);
 
     GranuleCalculator calculator;
     double radius = double(dataset.numberOfColumns() - 1) / dataset.numberOfColumns();
@@ -78,3 +59,29 @@ int main(int argc, char** argv) {
     return 0;
 }
 
+
+void print(const SimpleDataset& dataset) {
+    for (auto &row: dataset.getRows()) {
+        for (auto &attr: *row) {
+            switch (attr.getType()) {
+                case Attribute::SIMPLE:
+                    cout << attr.getValue();
+                    break;
+                case Attribute::NUMERICAL:
+                    cout << "!" << attr.getValue();
+                    break;
+                default:
+                    break;
+            }
+            cout << ' ';
+        }
+        cout << endl;
+    }
+}
+
+void print(const Dataset& dataset) {
+    for (auto &it: dataset.getClassDatasets()) {
+        cout << "-- class: " << it.first << ", rows:" << endl;
+        print(it.second);
+    }
+}

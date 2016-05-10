@@ -6,11 +6,11 @@ using namespace std;
 SimpleDataset::SimpleDataset() {
 }
 
-void SimpleDataset::addRow(const Row& row) {
+void SimpleDataset::addRow(const RowPtr& row) {
     rows_.push_back(row);
 }
 
-list<Row> SimpleDataset::getRows() const {
+const list<RowPtr>& SimpleDataset::getRows() const {
     return rows_;
 }
 
@@ -19,6 +19,6 @@ size_t SimpleDataset::size() const {
 }
 
 size_t SimpleDataset::numberOfColumns() const {
-    return rows_.empty() ? 0 : rows_.front().size();
+    return rows_.empty() ? 0 : rows_.front()->size();
 }
 

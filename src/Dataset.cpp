@@ -5,6 +5,8 @@
 using namespace std;
 using namespace boost;
 
+Dataset::Dataset() {
+}
 
 Dataset::Dataset(const string& fileName, int classCol) {
     ifstream file;
@@ -12,7 +14,7 @@ Dataset::Dataset(const string& fileName, int classCol) {
     file.open(fileName);
 
     while (std::getline(file, line)) {
-        Row row;
+        RowPtr row(new Row());
         stringstream lineStream(line);
         string value, cls;
         
@@ -20,7 +22,7 @@ Dataset::Dataset(const string& fileName, int classCol) {
         for (int i = 0; i < classCol; ++i) {
             if (!getline(lineStream, value, ','))
                 throw exception();
-            row.push_back(Attribute::createAttribute(value));
+            row->push_back(Attribute::createAttribute(value));
         }
         
         // get class
@@ -32,7 +34,7 @@ Dataset::Dataset(const string& fileName, int classCol) {
         
         // remaining values from row
         while (getline(lineStream, value, ',')) {
-            row.push_back(Attribute::createAttribute(value));
+            row->push_back(Attribute::createAttribute(value));
         }
         
         classDatasets_[cls].addRow(row);
@@ -41,7 +43,11 @@ Dataset::Dataset(const string& fileName, int classCol) {
     file.close();
 }
 
-std::map<std::string, SimpleDataset> Dataset::getClassDatasets() const {
+void Dataset::addClass(const std::string& cls, const SimpleDataset& dataset) {
+    classDatasets_[cls] = dataset;
+}
+
+const std::map<std::string, SimpleDataset>& Dataset::getClassDatasets() const {
     return classDatasets_;
 }
 

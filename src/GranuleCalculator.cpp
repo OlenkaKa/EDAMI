@@ -9,13 +9,13 @@ GranuleSet *GranuleCalculator::calculateGranules(const Dataset &dataset, const P
     GranuleSet *granuleSet = new GranuleSet();
     for (auto &entry : dataset.getClassDatasets()) {
         (*granuleSet)[entry.first] = vector<vector<int>>();
-        const list<Row> &rows = entry.second.getRows();
+        const list<RowPtr> &rows = entry.second.getRows();
         int rowIdx = 0;
         for (auto &row : rows) {
             vector<int> similarRows;
             int otherRowIdx = 0;
             for (auto &otherRow : rows) {
-                if (rowIdx == otherRowIdx || areSimilar(row, otherRow)) {
+                if (rowIdx == otherRowIdx || areSimilar(*row, *otherRow)) {
                     similarRows.push_back(otherRowIdx);
                 }
                 ++otherRowIdx;

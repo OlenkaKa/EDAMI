@@ -3,21 +3,23 @@
 
 #include "Attribute.h"
 #include <list>
+#include <memory>
 #include <string>
 #include <vector>
 
 typedef std::vector<Attribute> Row;
+typedef std::shared_ptr<Row> RowPtr;
 
 class SimpleDataset {
 public:
     SimpleDataset();
-    void addRow(const Row& row);
-    std::list<Row> getRows() const;
+    void addRow(const RowPtr& row);
+    const std::list<RowPtr>& getRows() const;
     size_t size() const;
     size_t numberOfColumns() const;
 
 private:
-    std::list<Row> rows_;
+    std::list<RowPtr> rows_;
 };
 
 #endif /* SIMPLE_DATASET_H */

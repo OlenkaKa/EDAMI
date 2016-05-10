@@ -8,8 +8,10 @@ ADD_DEFINITIONS (
 ADD_EXECUTABLE (main
         main.cpp
         Attribute.cpp
-        Dataset.cpp
         SimpleDataset.cpp
+        Dataset.cpp
         GranuleCalculator.cpp
-        MinimalSizeStrategy.cpp)
+        MinimalSizeStrategy.cpp
+        CrossValidation.cpp
+)
 
