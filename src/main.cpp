@@ -64,7 +64,7 @@ void print(const SimpleDataset& dataset) {
     for (auto &row: dataset.getRows()) {
         for (auto &attr: *row) {
             switch (attr.getType()) {
-                case Attribute::SIMPLE:
+                case Attribute::NOMINAL:
                     cout << attr.getValue();
                     break;
                 case Attribute::NUMERICAL:

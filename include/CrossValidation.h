@@ -14,7 +14,7 @@ struct Sets {
 class CrossValidation {
 public:
     CrossValidation(const Dataset& dataset, int subsetsNum);
-    Sets getSets(int subsetId);
+    Sets getSets(int subsetId) const;
 
 private:
     

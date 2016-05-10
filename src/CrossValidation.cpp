@@ -36,12 +36,12 @@ CrossValidation::CrossValidation(const Dataset& dataset, int subsetsNum):
     }
 }
 
-Sets CrossValidation::getSets(int subsetId) {
+Sets CrossValidation::getSets(int subsetId) const {
     Sets result;
     for (auto &clsEntry: dataset_->getClassDatasets()) {
         string cls = clsEntry.first;
         const list<RowPtr> clsRows = clsEntry.second.getRows();
-        vector<int> ids = subsets_[cls];
+        vector<int> ids = subsets_.at(cls);
         
         SimpleDataset clsTrainSet, clsTestSet;
         auto rowsIt = clsRows.begin();

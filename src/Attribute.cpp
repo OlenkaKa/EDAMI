@@ -5,7 +5,7 @@ using namespace std;
 using namespace boost;
 
 Attribute::Attribute(const string& value):
-        type_(SIMPLE), value_(value) {
+        type_(NOMINAL), value_(value) {
 }
 
 Attribute::Attribute(double value):

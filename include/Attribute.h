@@ -6,7 +6,7 @@
 class Attribute {
 public:
     enum AttributeType {
-        SIMPLE,
+        NOMINAL,
         NUMERICAL
     };
    

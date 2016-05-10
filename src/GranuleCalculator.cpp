@@ -41,7 +41,7 @@ bool GranuleCalculator::areEqual(const Attribute& a1, const Attribute& a2) {
     if(a1.getType() != a2.getType()) {
         throw invalid_argument("Cannot compare attributes of different types");
     }
-    if(Attribute::SIMPLE == a1.getType()) {
+    if(Attribute::NOMINAL == a1.getType()) {
         return get<string>(a1.getValue()) == get<string>(a2.getValue());
     } else if(Attribute::NUMERICAL == a1.getType()) {
         double difference = get<double>(a1.getValue()) - get<double>(a2.getValue());
