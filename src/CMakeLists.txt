@@ -12,6 +12,7 @@ ADD_EXECUTABLE (main
         Dataset.cpp
         GranuleCalculator.cpp
         MinimalSizeStrategy.cpp
-        CrossValidation.cpp
+        SimpleCrossValidation.cpp
+        LeaveOneOutValidation.cpp
 )
 

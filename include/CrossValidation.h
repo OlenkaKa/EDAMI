@@ -1,38 +1,18 @@
-#ifndef CROSS_VALIDATION_H
-#define CROSS_VALIDATION_H
+#ifndef EDAMI_CROSSVALIDATION_H
+#define EDAMI_CROSSVALIDATION_H
 
 #include "Dataset.h"
-#include <map>
-#include <vector>
 
-
-struct Sets {
+struct DatasetPair {
     Dataset trainSet;
     Dataset testSet;
 };
 
 class CrossValidation {
 public:
-    CrossValidation(const Dataset& dataset, int subsetsNum);
-    Sets getSets(int subsetId) const;
-
-private:
-    
-    /**
-     * Pointer to original dataset
-     */
-    const Dataset* dataset_;
-    
-    /**
-     * Map with subset ids for each row in dataset
-     */
-    std::map<std::string, std::vector<int> > subsets_;
-    
-    /**
-     * Number of all subsets
-     */
-    int subsetsNum_;
+    virtual DatasetPair getPair(int pairId) const = 0;
+    virtual int numerOfPairs() const = 0;
 };
 
-#endif /* CROSS_VALIDATION_H */
+#endif /* EDAMI_CROSSVALIDATION_H */
 

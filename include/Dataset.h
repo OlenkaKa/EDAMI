@@ -10,6 +10,7 @@ public:
     Dataset();
     Dataset(const std::string& fileName, int classCol);
     void addClass(const std::string& cls, const SimpleDataset& dataset);
+    void addRow(const std::string& cls, const RowPtr& row);
     const std::map<std::string, SimpleDataset>& getClassDatasets() const;
     size_t numberOfColumns() const;
 

@@ -47,6 +47,10 @@ void Dataset::addClass(const std::string& cls, const SimpleDataset& dataset) {
     classDatasets_[cls] = dataset;
 }
 
+void Dataset::addRow(const std::string& cls, const RowPtr& row) {
+    classDatasets_[cls].addRow(row);
+}
+
 const std::map<std::string, SimpleDataset>& Dataset::getClassDatasets() const {
     return classDatasets_;
 }

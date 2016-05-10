@@ -1,24 +1,24 @@
-#include "CrossValidation.h"
+#include "SimpleCrossValidation.h"
 #include <algorithm>
 #include <random>
 
 using namespace std;
 
-CrossValidation::CrossValidation(const Dataset& dataset, int subsetsNum):
-        dataset_(&dataset), subsetsNum_(subsetsNum) {
+SimpleCrossValidation::SimpleCrossValidation(const Dataset& dataset, int pairsNum):
+        dataset_(&dataset), pairsNum_(pairsNum) {
     
     // subset id for remaining rows (remainders after division)
     int remainVal = 0;
     
     for (auto &clsEntry: dataset_->getClassDatasets()) {
         size_t rowsNum = clsEntry.second.size();
-        size_t subsetSize = rowsNum / subsetsNum_;
+        size_t subsetSize = rowsNum / pairsNum_;
         
         vector<int> subsetIds(rowsNum);
         
         auto startIt = subsetIds.begin();
         auto endIt = startIt + subsetSize;
-        for (int i = 0; i < subsetsNum; ++i) {
+        for (int i = 0; i < pairsNum_; ++i) {
             fill(startIt, endIt, i);
             startIt = endIt;
             endIt = endIt + subsetSize;
@@ -26,7 +26,7 @@ CrossValidation::CrossValidation(const Dataset& dataset, int subsetsNum):
         
         for (auto it = startIt; it != subsetIds.end(); ++it) {
             *it = remainVal;
-            remainVal = (remainVal + 1) % subsetsNum_;
+            remainVal = (remainVal + 1) % pairsNum_;
         }
         
         auto engine = default_random_engine {};
@@ -36,8 +36,8 @@ CrossValidation::CrossValidation(const Dataset& dataset, int subsetsNum):
     }
 }
 
-Sets CrossValidation::getSets(int subsetId) const {
-    Sets result;
+DatasetPair SimpleCrossValidation::getPair(int pairId) const {
+    DatasetPair result;
     for (auto &clsEntry: dataset_->getClassDatasets()) {
         string cls = clsEntry.first;
         const list<RowPtr> clsRows = clsEntry.second.getRows();
@@ -47,7 +47,7 @@ Sets CrossValidation::getSets(int subsetId) const {
         auto rowsIt = clsRows.begin();
         auto idsIt = ids.begin();
         for (; rowsIt != clsRows.end() && idsIt != ids.end(); ++rowsIt, ++idsIt) {
-            if (*idsIt == subsetId) {
+            if (*idsIt == pairId) {
                 clsTestSet.addRow(*rowsIt);
             } else {
                 clsTrainSet.addRow(*rowsIt);
@@ -58,3 +58,8 @@ Sets CrossValidation::getSets(int subsetId) const {
     }
     return result;
 }
+
+int SimpleCrossValidation::numerOfPairs() const {
+    return pairsNum_;
+}
+
