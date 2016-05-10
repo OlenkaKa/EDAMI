@@ -1,4 +1,5 @@
 #include "Dataset.h"
+#include "MinimalSizeStrategy.h"
 #include <iostream>
 #include <GranuleCalculator.h>
 
@@ -60,11 +61,20 @@ int main(int argc, char** argv) {
     double radius = double(dataset.numberOfColumns() - 1) / dataset.numberOfColumns();
     GranuleCalculator::Params params(0.1f, radius);
     GranuleSet *granuleSet = calculator.calculateGranules(dataset, params);
-
+    
     cout << endl;
     print(*granuleSet);
-    delete granuleSet;
 
+    CoveringFindingStrategy *strategy = new MinimalSizeStrategy();
+    cout << endl << "Selecting granules for covering..." << endl;
+    GranuleSet *covering = strategy->selectGranules(dataset, *granuleSet);
+
+    print(*covering);
+    
+    delete granuleSet;
+    delete strategy;
+    delete covering;
+    
     return 0;
 }
 

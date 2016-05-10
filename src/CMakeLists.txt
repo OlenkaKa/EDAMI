@@ -10,5 +10,6 @@ ADD_EXECUTABLE (main
         Attribute.cpp
         Dataset.cpp
         SimpleDataset.cpp
-        GranuleCalculator.cpp)
+        GranuleCalculator.cpp
+        MinimalSizeStrategy.cpp)
 
