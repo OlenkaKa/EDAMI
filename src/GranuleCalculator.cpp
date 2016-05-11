@@ -8,21 +8,22 @@ GranuleSet *GranuleCalculator::calculateGranules(const Dataset &dataset, const P
     this->params_ = params;
     GranuleSet *granuleSet = new GranuleSet();
     for (auto &entry : dataset.getClassDatasets()) {
-        (*granuleSet)[entry.first] = vector<vector<int>>();
+        SimpleGranuleSetPtr simpleSetPtr(new SimpleGranuleSet());
         const list<RowPtr> &rows = entry.second.getRows();
         int rowIdx = 0;
         for (auto &row : rows) {
-            vector<int> similarRows;
+            GranuleMembersPtr granuleMembersPtr(new GranuleMembers());
             int otherRowIdx = 0;
             for (auto &otherRow : rows) {
                 if (rowIdx == otherRowIdx || areSimilar(*row, *otherRow)) {
-                    similarRows.push_back(otherRowIdx);
+                    granuleMembersPtr->push_back(otherRowIdx);
                 }
                 ++otherRowIdx;
             }
-            (*granuleSet)[entry.first].push_back(similarRows);
+            simpleSetPtr->addGranule(rowIdx, granuleMembersPtr);
             ++rowIdx;
         }
+        granuleSet->addClass(entry.first, simpleSetPtr);
     }
     return granuleSet;
 }

@@ -14,5 +14,6 @@ ADD_EXECUTABLE (main
         MinimalSizeStrategy.cpp
         SimpleCrossValidation.cpp
         LeaveOneOutValidation.cpp
-)
+        GranuleSet.cpp
+        SimpleGranuleSet.cpp)
 

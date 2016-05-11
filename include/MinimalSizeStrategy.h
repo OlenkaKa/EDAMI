@@ -3,6 +3,7 @@
 
 #include <CoveringFindingStrategy.h>
 #include <bits/stl_set.h>
+#include "SimpleGranuleSet.h"
 
 class MinimalSizeStrategy : public CoveringFindingStrategy {
 public:
@@ -10,7 +11,7 @@ public:
 
 private:
     std::set<int> asSetOfIndexes(unsigned long size) const;
-    bool granuleAddsSthNew(std::set<int> &indexesToCover, const std::vector<int> &granule) const;
+    bool granuleAddsSthNew(std::set<int> &indexesToCover, GranuleMembersPtr members) const;
 };
 
 #endif //EDAMI_MINIMALSIZESTRATEGY_H

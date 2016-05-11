@@ -4,8 +4,7 @@
 #include <map>
 #include <vector>
 #include <SimpleDataset.h>
-
-typedef std::map<std::string, std::vector<std::vector<int>>> GranuleSet;
+#include "GranuleSet.h"
 
 class Dataset;
 

@@ -3,24 +3,24 @@
 #include "MinimalSizeStrategy.h"
 #include <iostream>
 #include <GranuleCalculator.h>
+#include <algorithm>
 
 using namespace std;
 using namespace boost;
 
 void print(const GranuleSet& granuleSet) {
     cout << "[ GranuleSet ]" << endl;
-    for(auto &entry : granuleSet) {
-        cout << "--- class: " << entry.first << endl;
-        const vector<vector<int>> &granules = entry.second;
-        for(size_t i = 0; i < granules.size(); ++i) {
-            string granule = "";
-            for(size_t j = 0; j < granules.at(i).size(); ++j) {
-                if(j != 0) {
-                    granule += ",";
-                }
-                granule += to_string(granules.at(i).at(j));
+    for(auto &classEntry : granuleSet.getClassGranuleSets()) {
+        cout << "--- class: " << classEntry.first << endl;
+        for(auto &granuleEntry : classEntry.second->getGranules()) {
+            int rowIdx = granuleEntry.first;
+            GranuleMembersPtr members = granuleEntry.second;
+            string memberIndexes = "";
+            for(auto &idx : (*members)) {
+                memberIndexes += to_string(idx) + ",";
             }
-            cout << "Row " << i << ", granule (" << granule << ")" << endl;
+            memberIndexes.pop_back();
+            cout << "Row " << rowIdx << ", granule (" << memberIndexes << ")" << endl;
         }
     }
 }
