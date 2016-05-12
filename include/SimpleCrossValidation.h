@@ -9,8 +9,9 @@
 class SimpleCrossValidation: public CrossValidation {
 public:
     SimpleCrossValidation(const Dataset& dataset, int subsetsNum);
-    DatasetPair getPair(int pairId) const;
-    int numerOfPairs() const;
+    void getData(int pairId, Dataset &trainSet, Dataset &testSet,
+            NormalizationParams &params) const;
+    int numberOfPairs() const;
 private:
     
     /**

@@ -1,6 +1,5 @@
 #include "SimpleCrossValidation.h"
 #include <algorithm>
-#include <random>
 
 using namespace std;
 
@@ -36,8 +35,8 @@ SimpleCrossValidation::SimpleCrossValidation(const Dataset& dataset, int pairsNu
     }
 }
 
-DatasetPair SimpleCrossValidation::getPair(int pairId) const {
-    DatasetPair result;
+void SimpleCrossValidation::getData(int pairId, Dataset &trainSet, Dataset &testSet,
+            NormalizationParams &params) const {
     for (auto &clsEntry: dataset_->getClassDatasets()) {
         string cls = clsEntry.first;
         const list<RowPtr> clsRows = clsEntry.second.getRows();
@@ -51,15 +50,15 @@ DatasetPair SimpleCrossValidation::getPair(int pairId) const {
                 clsTestSet.addRow(*rowsIt);
             } else {
                 clsTrainSet.addRow(*rowsIt);
+                params.setValues(*rowsIt);
             }
         }
-        result.trainSet.addClass(cls, clsTrainSet);
-        result.testSet.addClass(cls, clsTestSet);
+        trainSet.addClass(cls, clsTrainSet);
+        testSet.addClass(cls, clsTestSet);
     }
-    return result;
 }
 
-int SimpleCrossValidation::numerOfPairs() const {
+int SimpleCrossValidation::numberOfPairs() const {
     return pairsNum_;
 }
 

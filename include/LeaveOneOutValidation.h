@@ -6,11 +6,12 @@
 class LeaveOneOutValidation: public CrossValidation {
 public:
     LeaveOneOutValidation(const Dataset& dataset);
-    DatasetPair getPair(int pairId) const;
-    int numerOfPairs() const;
+    void getData(int pairId, Dataset &trainSet, Dataset &testSet,
+            NormalizationParams &params) const;
+    int numberOfPairs() const;
 private:
     const Dataset* dataset_;
-    long rowsNum_;
+    int rowsNum_;
 };
 
 #endif /* EDAMI_LEAVEONEOUTVALIDATION_H */

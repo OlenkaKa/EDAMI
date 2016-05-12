@@ -9,24 +9,24 @@ LeaveOneOutValidation::LeaveOneOutValidation(const Dataset& dataset):
     }
 }
 
-DatasetPair LeaveOneOutValidation::getPair(int pairId) const {
-    DatasetPair result;
+void LeaveOneOutValidation::getData(int pairId, Dataset &trainSet, Dataset &testSet,
+            NormalizationParams &params) const {
     int i = 0;    
     for (auto &clsEntry: dataset_->getClassDatasets()) {
         string cls = clsEntry.first;
         for (auto &row: clsEntry.second.getRows()) {
             if (i == pairId) {
-                result.testSet.addRow(cls, row);
+                testSet.addRow(cls, row);
             } else {
-                result.trainSet.addRow(cls, row);
+                trainSet.addRow(cls, row);
+                params.setValues(row);
             }
             ++i;
         }
     }
-    return result;
 }
 
-int LeaveOneOutValidation::numerOfPairs() const {
+int LeaveOneOutValidation::numberOfPairs() const {
     return rowsNum_;
 }
 
