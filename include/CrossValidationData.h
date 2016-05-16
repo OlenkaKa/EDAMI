@@ -4,7 +4,7 @@
 #include "Dataset.h"
 #include "NormalizationParams.h"
 
-class CrossValidation {
+class CrossValidationData {
 public:
     virtual void getData(int pairId, Dataset &trainSet, Dataset &testSet,
             NormalizationParams &params) const = 0;

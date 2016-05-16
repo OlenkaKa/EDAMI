@@ -58,3 +58,12 @@ const std::map<std::string, SimpleDataset>& Dataset::getClassDatasets() const {
 size_t Dataset::numberOfColumns() const {
     return classDatasets_.empty() ? 0 : (*classDatasets_.begin()).second.numberOfColumns();
 }
+
+ostream& operator<<(ostream& os, const Dataset& dataset) {
+    for (auto &it: dataset.getClassDatasets()) {
+        os << "-- class: " << it.first << ", rows:" << endl;
+        os << it.second;
+    }
+    return os;
+}
+

@@ -16,4 +16,6 @@ private:
     ClassGranuleSets classGranuleSets_;
 };
 
+std::ostream& operator<<(std::ostream& os, const GranuleSet& granuleSet);
+
 #endif //EDAMI_GRANULESET_H

@@ -1,12 +1,12 @@
 #ifndef EDAMI_SIMPLECROSSVALIDATION_H
 #define EDAMI_SIMPLECROSSVALIDATION_H
 
-#include "CrossValidation.h"
+#include "CrossValidationData.h"
 #include "Dataset.h"
 #include <map>
 #include <vector>
 
-class SimpleCrossValidation: public CrossValidation {
+class SimpleCrossValidation: public CrossValidationData {
 public:
     SimpleCrossValidation(const Dataset& dataset, int subsetsNum);
     void getData(int pairId, Dataset &trainSet, Dataset &testSet,

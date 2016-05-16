@@ -22,5 +22,7 @@ private:
     std::list<RowPtr> rows_;
 };
 
+std::ostream& operator<<(std::ostream& os, const SimpleDataset& dataset);
+
 #endif /* SIMPLE_DATASET_H */
 

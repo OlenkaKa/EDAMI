@@ -22,3 +22,23 @@ size_t SimpleDataset::numberOfColumns() const {
     return rows_.empty() ? 0 : rows_.front()->size();
 }
 
+ostream& operator<<(ostream& os, const SimpleDataset& dataset) {
+    for (auto &row: dataset.getRows()) {
+        for (auto &attr: *row) {
+            switch (attr.getType()) {
+                case Attribute::NOMINAL:
+                    os << attr.getValue();
+                    break;
+                case Attribute::NUMERICAL:
+                    os << "!" << attr.getValue();
+                    break;
+                default:
+                    break;
+            }
+            os << ' ';
+        }
+        os << endl;
+    }
+    return os;
+}
+

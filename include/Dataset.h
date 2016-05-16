@@ -18,5 +18,7 @@ private:
     std::map<std::string, SimpleDataset> classDatasets_;
 };
 
+std::ostream& operator<<(std::ostream& os, const Dataset& dataset);
+
 #endif /* DATASET_H */
 
