@@ -38,7 +38,7 @@ void calculate(CrossValidationData* data) {
     
     cout << endl << endl
          << "=============================" << endl
-         << "     Creating classifiers"      << endl
+         << "     Creating classifiers"     << endl
          << " Parameters:"                  << endl
          << " * cross-validation: k = " << numberOfPairs << endl
          << "=============================" << endl;
@@ -52,7 +52,10 @@ void calculate(CrossValidationData* data) {
         Dataset trainSet, testSet;
         NormalizationParams normalization;
         data->getData(i, trainSet, testSet, normalization);
-        
+
+        trainSet.normalize(normalization);
+        testSet.normalize(normalization);
+
         GranuleCalculator calculator;
         double radius = double(trainSet.numberOfColumns() - 1) / trainSet.numberOfColumns();
         GranuleCalculator::Params params(0.1f, radius);

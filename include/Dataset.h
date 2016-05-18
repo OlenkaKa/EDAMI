@@ -1,7 +1,8 @@
-#ifndef DATASET_H
-#define DATASET_H
+#ifndef EDAMI_DATASET_H
+#define EDAMI_DATASET_H
 
 #include "SimpleDataset.h"
+#include "NormalizationParams.h"
 #include <string>
 #include <map>
 
@@ -13,6 +14,7 @@ public:
     void addRow(const std::string& cls, const RowPtr& row);
     const std::map<std::string, SimpleDataset>& getClassDatasets() const;
     size_t numberOfColumns() const;
+    void normalize(const NormalizationParams& normalization);
 
 private:
     std::map<std::string, SimpleDataset> classDatasets_;
@@ -20,5 +22,5 @@ private:
 
 std::ostream& operator<<(std::ostream& os, const Dataset& dataset);
 
-#endif /* DATASET_H */
+#endif /* EDAMI_DATASET_H */
 

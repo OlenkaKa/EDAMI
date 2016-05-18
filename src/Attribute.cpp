@@ -20,6 +20,12 @@ variant<string, double> Attribute::getValue() const {
     return value_;
 }
 
+double& Attribute::operator=(double value) {
+    value_ = value;
+    type_ = NUMERICAL;
+    return get<double>(value_);
+}
+
 Attribute Attribute::createAttribute(const std::string& str) {
     try {
         double num = lexical_cast<double>(str);

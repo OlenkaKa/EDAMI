@@ -50,7 +50,7 @@ void SimpleCrossValidation::getData(int pairId, Dataset &trainSet, Dataset &test
                 clsTestSet.addRow(*rowsIt);
             } else {
                 clsTrainSet.addRow(*rowsIt);
-                params.setValues(*rowsIt);
+                setNormalizationParams(*rowsIt, params);
             }
         }
         trainSet.addClass(cls, clsTrainSet);

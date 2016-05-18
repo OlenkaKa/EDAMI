@@ -26,17 +26,11 @@ double NormalizationParams::Values::getMaxValue() const {
     return maxValue_;
 }
 
-void NormalizationParams::setValues(const RowPtr& row) {
-    size_t size = row->size();
-    for (int col = 0; col < size; ++col) {
-        if (row->at(col).getType() == Attribute::NUMERICAL) {
-            double attrVal = boost::get<double>(row->at(col).getValue());
-            if (values_.find(col) == values_.end()) {
-                values_[col] = NormalizationParams::Values(attrVal, attrVal);
-            } else {
-                values_[col].setValue(attrVal);
-            }
-        }
+void NormalizationParams::setValue(int col, double value) {
+    if (values_.find(col) == values_.end()) {
+        values_[col] = NormalizationParams::Values(value, value);
+    } else {
+        values_[col].setValue(value);
     }
 }
 

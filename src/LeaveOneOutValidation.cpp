@@ -19,7 +19,7 @@ void LeaveOneOutValidation::getData(int pairId, Dataset &trainSet, Dataset &test
                 testSet.addRow(cls, row);
             } else {
                 trainSet.addRow(cls, row);
-                params.setValues(row);
+                setNormalizationParams(row, params);
             }
             ++i;
         }

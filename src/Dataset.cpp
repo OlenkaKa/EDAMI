@@ -59,6 +59,12 @@ size_t Dataset::numberOfColumns() const {
     return classDatasets_.empty() ? 0 : (*classDatasets_.begin()).second.numberOfColumns();
 }
 
+void Dataset::normalize(const NormalizationParams& params) {
+    for (auto &classDataset: classDatasets_) {
+        classDataset.second.normalize(params);
+    }
+}
+
 ostream& operator<<(ostream& os, const Dataset& dataset) {
     for (auto &it: dataset.getClassDatasets()) {
         os << "-- class: " << it.first << ", rows:" << endl;

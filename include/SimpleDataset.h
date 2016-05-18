@@ -1,7 +1,8 @@
-#ifndef SIMPLE_DATASET_H
-#define	SIMPLE_DATASET_H
+#ifndef EDAMI_SIMPLEDATASET_H
+#define EDAMI_SIMPLEDATASET_H
 
 #include "Attribute.h"
+#include "NormalizationParams.h"
 #include <list>
 #include <memory>
 #include <string>
@@ -17,12 +18,14 @@ public:
     const std::list<RowPtr>& getRows() const;
     size_t size() const;
     size_t numberOfColumns() const;
+    void normalize(const NormalizationParams& params);
 
 private:
     std::list<RowPtr> rows_;
 };
 
+void setNormalizationParams(const RowPtr& row, NormalizationParams& params);
 std::ostream& operator<<(std::ostream& os, const SimpleDataset& dataset);
 
-#endif /* SIMPLE_DATASET_H */
+#endif /* EDAMI_SIMPLEDATASET_H */
 

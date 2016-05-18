@@ -1,7 +1,6 @@
 #ifndef EDAMI_NORMALIZATIONPARAMS_H
 #define EDAMI_NORMALIZATIONPARAMS_H
 
-#include "SimpleDataset.h"
 #include <map>
 
 class NormalizationParams {
@@ -18,7 +17,7 @@ public:
         double maxValue_;
     };
 
-    void setValues(const RowPtr& row);
+    void setValue(int col, double value);
     Values getValues(int col) const;
 
 private:

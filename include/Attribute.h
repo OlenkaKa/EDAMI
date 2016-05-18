@@ -1,5 +1,5 @@
-#ifndef ATTRIBUTE_H
-#define ATTRIBUTE_H
+#ifndef EDAMI_ATTRIBUTE_H
+#define EDAMI_ATTRIBUTE_H
 
 #include <boost/variant.hpp>
 
@@ -14,6 +14,7 @@ public:
     Attribute(double value);
     AttributeType getType() const;
     boost::variant<std::string, double> getValue() const;
+    double& operator=(double value);
     
     static Attribute createAttribute(const std::string& str);
     
@@ -23,5 +24,5 @@ private:
 };
 
 
-#endif /* ATTRIBUTE_H */
+#endif /* EDAMI_ATTRIBUTE_H */
 
