@@ -16,5 +16,6 @@ ADD_EXECUTABLE (main
         SimpleCrossValidation.cpp
         LeaveOneOutValidation.cpp
         GranuleSet.cpp
-        SimpleGranuleSet.cpp)
+        SimpleGranuleSet.cpp
+        GranularReflectionCreator.cpp)
 

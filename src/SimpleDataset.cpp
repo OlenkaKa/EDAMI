@@ -10,7 +10,7 @@ void SimpleDataset::addRow(const RowPtr& row) {
     rows_.push_back(row);
 }
 
-const list<RowPtr>& SimpleDataset::getRows() const {
+const Rows& SimpleDataset::getRows() const {
     return rows_;
 }
 
