@@ -9,7 +9,7 @@ GranuleSet *GranuleCalculator::calculateGranules(const Dataset &dataset, const P
     GranuleSet *granuleSet = new GranuleSet();
     for (auto &entry : dataset.getClassDatasets()) {
         SimpleGranuleSetPtr simpleSetPtr(new SimpleGranuleSet());
-        const list<RowPtr> &rows = entry.second.getRows();
+        const Rows &rows = entry.second.getRows();
         int rowIdx = 0;
         for (auto &row : rows) {
             GranuleMembersPtr granuleMembersPtr(new GranuleMembers());

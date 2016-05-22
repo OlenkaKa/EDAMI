@@ -40,7 +40,7 @@ void SimpleCrossValidation::getData(int pairId, Dataset &trainSet, Dataset &test
             NormalizationParams &params) const {
     for (auto &clsEntry: dataset_->getClassDatasets()) {
         string cls = clsEntry.first;
-        const list<RowPtr> clsRows = clsEntry.second.getRows();
+        const Rows clsRows = clsEntry.second.getRows();
         vector<int> ids = subsets_.at(cls);
         
         SimpleDataset clsTrainSet, clsTestSet;
