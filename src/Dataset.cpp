@@ -1,6 +1,7 @@
 #include "Dataset.h"
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 
 using namespace std;
 using namespace boost;
@@ -21,13 +22,13 @@ Dataset::Dataset(const string& fileName, int classCol) {
         // values in row before class attribute
         for (int i = 0; i < classCol; ++i) {
             if (!getline(lineStream, value, ','))
-                throw exception();
+                throw invalid_argument("Cannot read columns before class column.");
             row->push_back(Attribute::createAttribute(value));
         }
         
         // get class
         if (!getline(lineStream, cls, ','))
-            throw exception();
+            throw invalid_argument("Cannot read class column.");
         if (classDatasets_.find(cls) == classDatasets_.end()) {
             classDatasets_[cls] = SimpleDataset();
         }

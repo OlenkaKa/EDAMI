@@ -3,8 +3,8 @@
 #include "MinimalSizeStrategy.h"
 #include "SimpleCrossValidation.h"
 #include "LeaveOneOutValidation.h"
+#include "GranuleCalculator.h"
 #include <iostream>
-#include <GranuleCalculator.h>
 #include <algorithm>
 
 using namespace std;
@@ -29,6 +29,10 @@ int main(int argc, char** argv) {
     data = new LeaveOneOutValidation(dataset);
     calculate(data);
     delete data;
+
+#ifdef _WIN32
+    system("pause");
+#endif
 
     return 0;
 }

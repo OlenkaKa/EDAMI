@@ -1,5 +1,6 @@
 #include "GranuleSet.h"
 #include <ostream>
+#include <string>
 
 using namespace std;
 
