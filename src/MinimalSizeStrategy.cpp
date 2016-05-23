@@ -5,31 +5,31 @@ using namespace std;
 GranuleSet *MinimalSizeStrategy::selectGranules(const Dataset &dataset, const GranuleSet &allGranules) {
     GranuleSet *newGranuleSet = new GranuleSet();
     for (auto &entry : allGranules.getClassGranuleSets()) {
-
-        SimpleGranuleSetPtr originalSimpleSetPtr = entry.second;
-        set<int> indexesToCover = asSetOfIndexes(originalSimpleSetPtr->size());
-
-        SimpleGranuleSetPtr newSimpleSetPtr(new SimpleGranuleSet());
-
-        Granules::size_type granuleSize = originalSimpleSetPtr->getMinGranuleSize();
-        bool coveringFound = false;
-        while (!coveringFound) {
-            const Granules &granules = originalSimpleSetPtr->getGranules();
-            for(auto &granuleEntry : granules) {
-                GranuleMembersPtr members = granuleEntry.second;
-                if(members->size() == granuleSize && granuleAddsSthNew(indexesToCover, members)) {
-                    newSimpleSetPtr->addGranule(granuleEntry.first, members);
-                    if(indexesToCover.empty()) {
-                        coveringFound = true;
-                        break;
-                    }
-                }
-            }
-            ++granuleSize;
-        }
+        SimpleGranuleSetPtr newSimpleSetPtr = selectGranules(entry.second);
         newGranuleSet->addClass(entry.first, newSimpleSetPtr);
     }
     return newGranuleSet;
+}
+
+SimpleGranuleSetPtr MinimalSizeStrategy::selectGranules(SimpleGranuleSetPtr originalSimpleSetPtr) {
+    set<int> indexesToCover = asSetOfIndexes(originalSimpleSetPtr->size());
+    SimpleGranuleSetPtr newSimpleSetPtr(new SimpleGranuleSet());
+    Granules::size_type granuleSize = originalSimpleSetPtr->getMinGranuleSize();
+    bool coveringFound = false;
+    while (!coveringFound) {
+        for(auto &granuleEntry : originalSimpleSetPtr->getGranules()) {
+            GranuleMembersPtr members = granuleEntry.second;
+            if(members->size() == granuleSize && granuleAddsSthNew(indexesToCover, members)) {
+                newSimpleSetPtr->addGranule(granuleEntry.first, members);
+                if(indexesToCover.empty()) {
+                    coveringFound = true;
+                    break;
+                }
+            }
+        }
+        ++granuleSize;
+    }
+    return newSimpleSetPtr;
 }
 
 bool MinimalSizeStrategy::granuleAddsSthNew(set<int> &indexesToCover, GranuleMembersPtr members) const {
