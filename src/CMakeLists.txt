@@ -17,5 +17,6 @@ ADD_EXECUTABLE (main
         LeaveOneOutValidation.cpp
         GranuleSet.cpp
         SimpleGranuleSet.cpp
-        GranularReflectionCreator.cpp)
+        GranularReflectionCreator.cpp
+        MaximalSizeStrategy.cpp)
 
