@@ -1,6 +1,6 @@
 #include "Dataset.h"
 #include "CrossValidationData.h"
-#include "MinimalSizeStrategy.h"
+#include "MaximalSizeStrategy.h"
 #include "SimpleCrossValidation.h"
 #include "LeaveOneOutValidation.h"
 #include "GranuleCalculator.h"
@@ -73,7 +73,7 @@ void calculate(CrossValidationData* data) {
         cout << (*granuleSet);
 
         cout << endl << "Selecting granules for covering..." << endl;
-        CoveringFindingStrategy *strategy = new MinimalSizeStrategy();
+        CoveringFindingStrategy *strategy = new MaximalSizeStrategy();
         GranuleSet *covering = strategy->selectGranules(trainSet, *granuleSet);
         cout << (*covering);
 

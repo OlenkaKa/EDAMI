@@ -18,6 +18,7 @@ ADD_EXECUTABLE (main
         GranuleSet.cpp
         SimpleGranuleSet.cpp
         GranularReflectionCreator.cpp
+        MaximalSizeStrategy.cpp
         Classifier.cpp
 )
 
