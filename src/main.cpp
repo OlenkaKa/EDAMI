@@ -4,6 +4,7 @@
 #include "SimpleCrossValidation.h"
 #include "LeaveOneOutValidation.h"
 #include "GranuleCalculator.h"
+#include "Classifier.h"
 #include <iostream>
 #include <algorithm>
 #include <GranularReflectionCreator.h>
@@ -63,7 +64,7 @@ void calculate(CrossValidationData* data) {
 
         cout << endl << "Selected train set:" << endl;
         cout << trainSet;
-
+        
         cout << endl << "Calculating granules..." << endl;
         GranuleCalculator calculator;
         double radius = double(trainSet.numberOfColumns() - 1) / trainSet.numberOfColumns();
@@ -80,7 +81,17 @@ void calculate(CrossValidationData* data) {
         GranularReflectionCreator creator;
         Dataset *reflection = creator.createGranularReflection(trainSet, *covering);
         cout << (*reflection);
-        
+
+        cout << endl << "CLASSIFICATION:" << endl;
+        Classifier classifier((*reflection), "3+", 2);
+        for (auto &classDataset: testSet.getClassDatasets()) {
+            list<string> result;
+            classifier.classify(classDataset.second, result);
+            cout << "-- class: " << classDataset.first << endl;
+            for (auto &cls: result)
+                cout << cls << endl;
+        }
+
         delete granuleSet;
         delete strategy;
         delete covering;
