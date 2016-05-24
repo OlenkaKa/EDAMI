@@ -37,6 +37,7 @@ public:
 private:
     Params params_;
 
+    SimpleGranuleSetPtr calculateSimpleGranulesSet(const SimpleDataset& simpleDataSet);
     bool areSimilar(const Row &r1, const Row &r2);
     bool areEqual(const Attribute &a1, const Attribute &a2);
     bool lessThanOrEqual(double lhs, double rhs);

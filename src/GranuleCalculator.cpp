@@ -8,24 +8,27 @@ GranuleSet *GranuleCalculator::calculateGranules(const Dataset &dataset, const P
     this->params_ = params;
     GranuleSet *granuleSet = new GranuleSet();
     for (auto &entry : dataset.getClassDatasets()) {
-        SimpleGranuleSetPtr simpleSetPtr(new SimpleGranuleSet());
-        const Rows &rows = entry.second.getRows();
-        int rowIdx = 0;
-        for (auto &row : rows) {
-            GranuleMembersPtr granuleMembersPtr(new GranuleMembers());
-            int otherRowIdx = 0;
-            for (auto &otherRow : rows) {
-                if (rowIdx == otherRowIdx || areSimilar(*row, *otherRow)) {
-                    granuleMembersPtr->push_back(otherRowIdx);
-                }
-                ++otherRowIdx;
-            }
-            simpleSetPtr->addGranule(rowIdx, granuleMembersPtr);
-            ++rowIdx;
-        }
-        granuleSet->addClass(entry.first, simpleSetPtr);
+        granuleSet->addClass(entry.first, calculateSimpleGranulesSet(entry.second));
     }
     return granuleSet;
+}
+
+SimpleGranuleSetPtr GranuleCalculator::calculateSimpleGranulesSet(const SimpleDataset& simpleDataSet) {
+    SimpleGranuleSetPtr simpleSetPtr(new SimpleGranuleSet());
+    int rowIdx = 0;
+    for (auto &row : simpleDataSet.getRows()) {
+        GranuleMembersPtr granuleMembersPtr(new GranuleMembers());
+        int otherRowIdx = 0;
+        for (auto &otherRow : simpleDataSet.getRows()) {
+            if (rowIdx == otherRowIdx || areSimilar(*row, *otherRow)) {
+                granuleMembersPtr->push_back(otherRowIdx);
+            }
+            ++otherRowIdx;
+        }
+        simpleSetPtr->addGranule(rowIdx, granuleMembersPtr);
+        ++rowIdx;
+    }
+    return simpleSetPtr;
 }
 
 bool GranuleCalculator::areSimilar(const Row &r1, const Row &r2) {
