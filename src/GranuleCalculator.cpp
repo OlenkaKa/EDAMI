@@ -46,8 +46,12 @@ bool GranuleCalculator::areEqual(const Attribute& a1, const Attribute& a2) {
         return get<string>(a1.getValue()) == get<string>(a2.getValue());
     } else if(Attribute::NUMERICAL == a1.getType()) {
         double difference = get<double>(a1.getValue()) - get<double>(a2.getValue());
-        return std::abs(difference) <= params_.getEpsilon();
+        return lessThanOrEqual(std::abs(difference), params_.getEpsilon());
     } else {
         throw invalid_argument("Unknown attribute type: " + a1.getType());
     }
+}
+
+bool GranuleCalculator::lessThanOrEqual(double lhs, double rhs) {
+    return (std::abs(rhs - lhs) < 0.00000000000001) || lhs < rhs;
 }

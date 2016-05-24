@@ -66,8 +66,8 @@ void calculate(CrossValidationData* data) {
 
         cout << endl << "Calculating granules..." << endl;
         GranuleCalculator calculator;
-        double radius = double(trainSet.numberOfColumns() - 2) / trainSet.numberOfColumns();
-        GranuleCalculator::Params params(0.1f, radius);
+        double radius = double(trainSet.numberOfColumns() - 1) / trainSet.numberOfColumns();
+        GranuleCalculator::Params params(0.1, radius);
         GranuleSet *granuleSet = calculator.calculateGranules(trainSet, params);
         cout << (*granuleSet);
 
