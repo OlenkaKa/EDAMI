@@ -7,7 +7,7 @@
 
 class AverageGranuleSizeSequenceGenerator {
 public:
-    typedef Granules::size_type Size;
+    typedef int Size;
     void generateSizeSequence(Size avgGranuleSize, Size numberOfGranules, std::list<Size> &sequence);
     void test();
     void print(std::list<Size> l);

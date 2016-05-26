@@ -1,18 +1,13 @@
 #ifndef EDAMI_MINIMALSIZESTRATEGY_H
 #define EDAMI_MINIMALSIZESTRATEGY_H
 
-#include "CoveringFindingStrategy.h"
+#include "GranuleSizeStrategy.h"
 #include "SimpleGranuleSet.h"
-#include <set>
+#include <list>
 
-class MinimalSizeStrategy : public CoveringFindingStrategy {
-public:
-    virtual GranuleSet* selectGranules(const Dataset& dataset, const GranuleSet& allGranules);
-
+class MinimalSizeStrategy : public GranuleSizeStrategy {
 private:
-    SimpleGranuleSetPtr selectGranules(SimpleGranuleSetPtr originalSimpleSetPtr);
-    std::set<int> asSetOfIndexes(unsigned long size) const;
-    bool granuleAddsSthNew(std::set<int> &indexesToCover, GranuleMembersPtr members) const;
+    virtual void createGranuleSizeSequence(SimpleGranuleSetPtr originalSimpleSetPtr, std::list<int>& sequence);
 };
 
 #endif //EDAMI_MINIMALSIZESTRATEGY_H

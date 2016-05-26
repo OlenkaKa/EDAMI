@@ -6,8 +6,8 @@
 #include "Classifier.h"
 #include <iostream>
 #include <algorithm>
-#include <GranularReflectionCreator.h>
-#include <AverageSizeStrategy.h>
+#include "GranularReflectionCreator.h"
+#include "AverageSizeStrategy.h"
 
 using namespace std;
 using namespace boost;

@@ -2,55 +2,10 @@
 
 using namespace std;
 
-GranuleSet *MinimalSizeStrategy::selectGranules(const Dataset &dataset, const GranuleSet &allGranules) {
-    GranuleSet *newGranuleSet = new GranuleSet();
-    for (auto &entry : allGranules.getClassGranuleSets()) {
-        SimpleGranuleSetPtr newSimpleSetPtr = selectGranules(entry.second);
-        newGranuleSet->addClass(entry.first, newSimpleSetPtr);
+void MinimalSizeStrategy::createGranuleSizeSequence(SimpleGranuleSetPtr originalSimpleSetPtr, list<int>& sequence) {
+    unsigned long minSize = originalSimpleSetPtr->getMinGranuleSize();
+    unsigned long maxSize = originalSimpleSetPtr->getMaxGranuleSize();
+    for (unsigned long i = minSize; i <= maxSize; ++i) {
+        sequence.push_back(i);
     }
-    return newGranuleSet;
-}
-
-SimpleGranuleSetPtr MinimalSizeStrategy::selectGranules(SimpleGranuleSetPtr originalSimpleSetPtr) {
-    set<int> indexesToCover = asSetOfIndexes(originalSimpleSetPtr->size());
-    SimpleGranuleSetPtr newSimpleSetPtr(new SimpleGranuleSet());
-    Granules::size_type granuleSize = originalSimpleSetPtr->getMinGranuleSize();
-    bool coveringFound = false;
-    while (!coveringFound) {
-        for(auto &granuleEntry : originalSimpleSetPtr->getGranules()) {
-            GranuleMembersPtr members = granuleEntry.second;
-            if(members->size() == granuleSize && granuleAddsSthNew(indexesToCover, members)) {
-                newSimpleSetPtr->addGranule(granuleEntry.first, members);
-                if(indexesToCover.empty()) {
-                    coveringFound = true;
-                    break;
-                }
-            }
-        }
-        ++granuleSize;
-    }
-    return newSimpleSetPtr;
-}
-
-bool MinimalSizeStrategy::granuleAddsSthNew(set<int> &indexesToCover, GranuleMembersPtr members) const {
-    bool anythingNew = false;
-    for (const int &idx : (*members)) {
-        auto iter = indexesToCover.find(idx);
-        if (iter != indexesToCover.end()) {
-            anythingNew = true;
-            indexesToCover.erase(iter);
-            if(indexesToCover.empty()) {    // selected granules already represent all granules 
-                break;
-            }
-        }
-    }
-    return anythingNew;
-}
-
-set<int> MinimalSizeStrategy::asSetOfIndexes(unsigned long size) const {
-    set<int> indexes;
-    for (int i = 0; i < size; ++i) {
-        indexes.insert(i);
-    }
-    return indexes;
 }
