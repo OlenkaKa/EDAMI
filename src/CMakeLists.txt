@@ -21,5 +21,6 @@ ADD_EXECUTABLE (main
         MaximalSizeStrategy.cpp
         Classifier.cpp
         AverageSizeStrategy.cpp
-        AverageGranuleSizeSequenceGenerator.cpp)
+        AverageGranuleSizeSequenceGenerator.cpp
+        GranuleSizeStrategy.cpp)
 
