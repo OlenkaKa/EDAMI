@@ -20,5 +20,6 @@ ADD_EXECUTABLE (main
         GranularReflectionCreator.cpp
         MaximalSizeStrategy.cpp
         Classifier.cpp
-)
+        AverageSizeStrategy.cpp
+        AverageGranuleSizeSequenceGenerator.cpp)
 

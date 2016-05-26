@@ -1,6 +1,5 @@
 #include "Dataset.h"
 #include "CrossValidationData.h"
-#include "MaximalSizeStrategy.h"
 #include "SimpleCrossValidation.h"
 #include "LeaveOneOutValidation.h"
 #include "GranuleCalculator.h"
@@ -8,6 +7,7 @@
 #include <iostream>
 #include <algorithm>
 #include <GranularReflectionCreator.h>
+#include <AverageSizeStrategy.h>
 
 using namespace std;
 using namespace boost;
@@ -67,13 +67,13 @@ void calculate(CrossValidationData* data) {
         
         cout << endl << "Calculating granules..." << endl;
         GranuleCalculator calculator;
-        double radius = double(trainSet.numberOfColumns() - 1) / trainSet.numberOfColumns();
+        double radius = double(trainSet.numberOfColumns() - 2) / trainSet.numberOfColumns();
         GranuleCalculator::Params params(0.1, radius);
         GranuleSet *granuleSet = calculator.calculateGranules(trainSet, params);
         cout << (*granuleSet);
 
         cout << endl << "Selecting granules for covering..." << endl;
-        CoveringFindingStrategy *strategy = new MaximalSizeStrategy();
+        CoveringFindingStrategy *strategy = new AverageSizeStrategy();
         GranuleSet *covering = strategy->selectGranules(trainSet, *granuleSet);
         cout << (*covering);
 

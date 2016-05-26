@@ -22,8 +22,12 @@ Granules::size_type SimpleGranuleSet::getMaxGranuleSize() const {
     return maxGranuleSize_;
 }
 
-Granules::size_type SimpleGranuleSet::getAverageGranuleSize() const {
-    return NO_VALUE;   // TODO
+double SimpleGranuleSet::getAverageGranuleSize() const {
+    Granules::size_type sum = 0;
+    for(auto &entry : granules_) {
+        sum += entry.second->size();
+    }
+    return double(sum) / granules_.size();
 }
 
 Granules::size_type SimpleGranuleSet::size() const {

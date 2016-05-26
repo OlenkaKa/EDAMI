@@ -17,7 +17,7 @@ public:
 
     Granules::size_type getMinGranuleSize() const;
     Granules::size_type getMaxGranuleSize() const;
-    Granules::size_type getAverageGranuleSize() const;
+    double getAverageGranuleSize() const;
 
     Granules::size_type size() const;
 
