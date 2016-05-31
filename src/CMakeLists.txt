@@ -1,5 +1,5 @@
-FIND_PACKAGE (Boost 1.41.0 REQUIRED COMPONENTS system)
-INCLUDE_DIRECTORIES (SYSTEM ${Boost_INCLUDE_DIR})
+FIND_PACKAGE (Boost 1.41.0 REQUIRED COMPONENTS system program_options regex)
+INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIR})
 
 ADD_DEFINITIONS (
     -std=c++11
@@ -24,3 +24,4 @@ ADD_EXECUTABLE (main
         AverageGranuleSizeSequenceGenerator.cpp
         GranuleSizeStrategy.cpp)
 
+TARGET_LINK_LIBRARIES(main ${Boost_LIBRARIES})

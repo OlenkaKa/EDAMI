@@ -8,18 +8,68 @@
 #include <algorithm>
 #include "GranularReflectionCreator.h"
 #include "AverageSizeStrategy.h"
+#include <boost/regex.hpp>
+#include <boost/program_options.hpp>
 
 using namespace std;
 using namespace boost;
+namespace po = boost::program_options;
 
+/**
+ * Program parameters given by user
+ */
+static struct {
+    string fileName;
+    int classCol = 0;
+    double radius = 0.1;
+    double epsilon = 0.1;
+    string knn = "3+";
+    int minkowski = 1;
+} userParams;
+
+void verifyKnn(const string& str) {
+    const regex reg("[0-9]+\\+?");
+    if (!regex_match(str, reg))
+        throw regex_error("Invalid k nearest neighbours format.");
+}
+
+/**
+ * Create and verify classifiers with given parameters
+ */
 void calculate(CrossValidationData* data);
 
 int main(int argc, char** argv) {
-    string file = "people.txt";
-    cout << file << endl;
+    // getting parameters
+    po::options_description description("Usage:");
+    description.add_options()
+            ("help,h", "print help message")
+            ("file,f", po::value<string>(&userParams.fileName)->required(), "name of file with dataset (required)")
+            ("class,c", po::value<int>(&userParams.classCol), "class column index in dataset")
+            ("radius,r", po::value<double>(&userParams.radius), "radius parameter used in granular computing")
+            ("eps,e", po::value<double>(&userParams.epsilon), "epsilon parameter for numerical attributes in granular computing")
+            ("knn,k", po::value<string>(&userParams.knn)->notifier(&verifyKnn), "k nearest neighbourhood parameter in format \"<num>\" or \"<num>+\"")
+            ("mink,m", po::value<int>(&userParams.minkowski), "minkowski parameter used in calculating distance");
 
-    Dataset dataset(file, 4); // people.txt
-    cout << dataset;
+    po::variables_map vm;
+    try {
+        po::store(po::parse_command_line(argc, argv, description), vm);
+        if (vm.count("help")) {
+            cout << description << endl;
+            return 0;
+        }
+        po::notify(vm);
+    } catch (...) {
+        cout << "Invalid arguments!" << endl;
+        cout << description << endl;
+        return 1;
+    }
+
+    // performing main task
+    cout << "File name: "
+         << userParams.fileName << endl << endl;
+    Dataset dataset(userParams.fileName, userParams.classCol);
+    cout << "Dataset:" << endl
+         << dataset << endl << endl;
 
     int subsetsNum[] = {2, 3};
     CrossValidationData* data;
@@ -67,8 +117,7 @@ void calculate(CrossValidationData* data) {
         
         cout << endl << "Calculating granules..." << endl;
         GranuleCalculator calculator;
-        double radius = double(trainSet.numberOfColumns() - 2) / trainSet.numberOfColumns();
-        GranuleCalculator::Params params(0.1, radius);
+        GranuleCalculator::Params params(userParams.epsilon, userParams.radius);
         GranuleSet *granuleSet = calculator.calculateGranules(trainSet, params);
         cout << (*granuleSet);
 
@@ -83,7 +132,7 @@ void calculate(CrossValidationData* data) {
         cout << (*reflection);
 
         cout << endl << "CLASSIFICATION:" << endl;
-        Classifier classifier((*reflection), "3+", 2);
+        Classifier classifier((*reflection), userParams.knn, userParams.minkowski);
         for (auto &classDataset: testSet.getClassDatasets()) {
             list<string> result;
             classifier.classify(classDataset.second, result);
