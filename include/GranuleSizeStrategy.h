@@ -6,7 +6,7 @@
 
 class GranuleSizeStrategy : public CoveringFindingStrategy {
 public:
-    virtual GranuleSet* selectGranules(const Dataset& dataset, const GranuleSet& allGranules);
+    virtual GranuleSet* selectGranules(const GranuleSet& allGranules);
     virtual ~GranuleSizeStrategy() {}
 
 private:

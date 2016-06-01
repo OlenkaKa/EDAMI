@@ -3,11 +3,9 @@
 
 #include "GranuleCalculator.h"
 
-class Dataset;
-
 class CoveringFindingStrategy {
 public:
-    virtual GranuleSet* selectGranules(const Dataset& dataset, const GranuleSet& allGranules) = 0;
+    virtual GranuleSet* selectGranules(const GranuleSet& allGranules) = 0;
     virtual ~CoveringFindingStrategy() {}
 };
 

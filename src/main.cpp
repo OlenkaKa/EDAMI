@@ -123,7 +123,7 @@ void calculate(CrossValidationData* data) {
 
         cout << endl << "Selecting granules for covering..." << endl;
         CoveringFindingStrategy *strategy = new AverageSizeStrategy();
-        GranuleSet *covering = strategy->selectGranules(trainSet, *granuleSet);
+        GranuleSet *covering = strategy->selectGranules(*granuleSet);
         cout << (*covering);
 
         cout << endl << "Creating granular reflection..." << endl;

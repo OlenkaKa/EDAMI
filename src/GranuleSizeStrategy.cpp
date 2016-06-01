@@ -2,7 +2,7 @@
 
 using namespace std;
 
-GranuleSet *GranuleSizeStrategy::selectGranules(const Dataset &dataset, const GranuleSet &allGranules) {
+GranuleSet *GranuleSizeStrategy::selectGranules(const GranuleSet &allGranules) {
     GranuleSet *newGranuleSet = new GranuleSet();
     for (auto &entry : allGranules.getClassGranuleSets()) {
         SimpleGranuleSetPtr newSimpleSetPtr = selectGranules(entry.second);
