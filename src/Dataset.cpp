@@ -15,6 +15,9 @@ Dataset::Dataset(const string& fileName, int classCol) {
     file.open(fileName);
 
     while (std::getline(file, line)) {
+        if(line.empty()) {  // skip empty lines that sometimes occur at the end of file
+            continue;
+        }
         RowPtr row(new Row());
         stringstream lineStream(line);
         string value, cls;
