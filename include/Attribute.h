@@ -17,7 +17,8 @@ public:
     double& operator=(double value);
     
     static Attribute createAttribute(const std::string& str);
-    
+    static Attribute createAttribute(const std::string& str, AttributeType type);
+
 private:
     AttributeType type_;
     boost::variant<std::string, double> value_;

@@ -2,9 +2,12 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include <DatasetInfoProvider.h>
 
 using namespace std;
 using namespace boost;
+
+static const char SEPARATOR = ',';
 
 Dataset::Dataset() {
 }
@@ -14,6 +17,9 @@ Dataset::Dataset(const string& fileName, int classCol) {
     string line;
     file.open(fileName);
 
+    DatasetInfoProvider provider;
+    DatasetInfoPtr datasetInfo = provider.getDatasetInfoForFile(fileName);
+    
     while (std::getline(file, line)) {
         if(line.empty()) {  // skip empty lines that sometimes occur at the end of file
             continue;
@@ -24,21 +30,31 @@ Dataset::Dataset(const string& fileName, int classCol) {
         
         // values in row before class attribute
         for (int i = 0; i < classCol; ++i) {
-            if (!getline(lineStream, value, ','))
+            if (!getline(lineStream, value, SEPARATOR))
                 throw invalid_argument("Cannot read columns before class column.");
-            row->push_back(Attribute::createAttribute(value));
+            if(datasetInfo) {
+                row->push_back(Attribute::createAttribute(value, datasetInfo->getColumnType(i)));
+            } else {
+                row->push_back(Attribute::createAttribute(value));
+            }
         }
         
         // get class
-        if (!getline(lineStream, cls, ','))
+        if (!getline(lineStream, cls, SEPARATOR))
             throw invalid_argument("Cannot read class column.");
         if (classDatasets_.find(cls) == classDatasets_.end()) {
             classDatasets_[cls] = SimpleDataset();
         }
         
         // remaining values from row
-        while (getline(lineStream, value, ',')) {
-            row->push_back(Attribute::createAttribute(value));
+        int idx = classCol + 1;
+        while (getline(lineStream, value, SEPARATOR)) {
+            if(datasetInfo) {
+                row->push_back(Attribute::createAttribute(value, datasetInfo->getColumnType(idx)));
+            } else {
+                row->push_back(Attribute::createAttribute(value));
+            }
+            ++idx;
         }
         
         classDatasets_[cls].addRow(row);

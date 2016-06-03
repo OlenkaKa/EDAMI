@@ -35,3 +35,10 @@ Attribute Attribute::createAttribute(const std::string& str) {
     }
 }
 
+Attribute Attribute::createAttribute(const std::string& str, AttributeType type) {
+    if(type == NOMINAL) {
+        return Attribute(str);
+    } else {
+        return Attribute(lexical_cast<double>(str));
+    }
+}

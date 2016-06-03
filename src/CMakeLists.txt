@@ -22,6 +22,8 @@ ADD_EXECUTABLE (main
         Classifier.cpp
         AverageSizeStrategy.cpp
         AverageGranuleSizeSequenceGenerator.cpp
-        GranuleSizeStrategy.cpp)
+        GranuleSizeStrategy.cpp
+        DatasetInfo.cpp
+        DatasetInfoProvider.cpp)
 
 TARGET_LINK_LIBRARIES(main ${Boost_LIBRARIES})
