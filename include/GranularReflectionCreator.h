@@ -8,10 +8,13 @@
 #include "Attribute.h"
 #include "SimpleGranuleSet.h"
 #include "GranuleSet.h"
+#include <memory>
+
+typedef std::shared_ptr<Dataset> DatasetPtr;
 
 class GranularReflectionCreator {
 public:
-    Dataset *createGranularReflection(const Dataset& originalData, const GranuleSet& granuleCovering);
+    DatasetPtr createGranularReflection(const Dataset& originalData, const GranuleSet& granuleCovering);
 
 private:
     typedef std::map<std::string, Rows::size_type> Occurrences;

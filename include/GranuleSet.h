@@ -16,6 +16,7 @@ private:
     ClassGranuleSets classGranuleSets_;
 };
 
+typedef std::shared_ptr<GranuleSet> GranuleSetPtr;
 std::ostream& operator<<(std::ostream& os, const GranuleSet& granuleSet);
 
 #endif //EDAMI_GRANULESET_H

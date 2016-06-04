@@ -32,7 +32,7 @@ public:
         double radius_;
     };
 
-    GranuleSet *calculateGranules(const Dataset &dataset, const Params &params);
+    GranuleSetPtr calculateGranules(const Dataset &dataset, const Params &params);
 
 private:
     Params params_;

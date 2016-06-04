@@ -4,9 +4,9 @@
 
 using namespace std;
 
-GranuleSet *GranuleCalculator::calculateGranules(const Dataset &dataset, const Params &params) {
+GranuleSetPtr GranuleCalculator::calculateGranules(const Dataset &dataset, const Params &params) {
     this->params_ = params;
-    GranuleSet *granuleSet = new GranuleSet();
+    GranuleSetPtr granuleSet(new GranuleSet());
     for (auto &entry : dataset.getClassDatasets()) {
         granuleSet->addClass(entry.first, calculateSimpleGranulesSet(entry.second));
     }

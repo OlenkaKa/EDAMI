@@ -8,6 +8,7 @@
 class MaximalSizeStrategy : public GranuleSizeStrategy {
 private:
     virtual void createGranuleSizeSequence(SimpleGranuleSetPtr originalSimpleSetPtr, std::list<int>& sequence);
+    virtual std::string getName() { return "Maximal size strategy"; }
 };
 
 #endif //EDAMI_MAXIMALSIZESTRATEGY_H

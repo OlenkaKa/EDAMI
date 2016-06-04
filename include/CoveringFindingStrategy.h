@@ -1,11 +1,13 @@
 #ifndef EDAMI_COVERINGFINDINGSTRATEGY_H
 #define EDAMI_COVERINGFINDINGSTRATEGY_H
 
-#include "GranuleCalculator.h"
+#include "GranuleSet.h"
+#include <string>
 
 class CoveringFindingStrategy {
 public:
-    virtual GranuleSet* selectGranules(const GranuleSet& allGranules) = 0;
+    virtual GranuleSetPtr selectGranules(const GranuleSet& allGranules) = 0;
+    virtual std::string getName() = 0;
     virtual ~CoveringFindingStrategy() {}
 };
 

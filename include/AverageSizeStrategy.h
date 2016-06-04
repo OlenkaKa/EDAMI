@@ -11,6 +11,7 @@ private:
     AverageGranuleSizeSequenceGenerator sizeSequenceGenerator_;
 
     virtual void createGranuleSizeSequence(SimpleGranuleSetPtr originalSimpleSetPtr, std::list<int>& sequence);
+    virtual std::string getName() { return "Average size strategy"; }
 };
 
 #endif //EDAMI_AVERAGESIZESTRATEGY_H

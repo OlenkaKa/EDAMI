@@ -2,8 +2,8 @@
 
 using namespace std;
 
-GranuleSet *GranuleSizeStrategy::selectGranules(const GranuleSet &allGranules) {
-    GranuleSet *newGranuleSet = new GranuleSet();
+GranuleSetPtr GranuleSizeStrategy::selectGranules(const GranuleSet &allGranules) {
+    GranuleSetPtr newGranuleSet(new GranuleSet());
     for (auto &entry : allGranules.getClassGranuleSets()) {
         SimpleGranuleSetPtr newSimpleSetPtr = selectGranules(entry.second);
         newGranuleSet->addClass(entry.first, newSimpleSetPtr);

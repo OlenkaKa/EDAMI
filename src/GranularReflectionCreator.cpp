@@ -2,8 +2,8 @@
 
 using namespace std;
 
-Dataset *GranularReflectionCreator::createGranularReflection(const Dataset &originalData, const GranuleSet &granuleCovering) {
-    Dataset *reflectionData = new Dataset();
+DatasetPtr GranularReflectionCreator::createGranularReflection(const Dataset &originalData, const GranuleSet &granuleCovering) {
+    DatasetPtr reflectionData(new Dataset());
     for (auto classEntry : granuleCovering.getClassGranuleSets()) {
         SimpleGranuleSetPtr simpleGranuleSet = classEntry.second;
         const SimpleDataset &originalSimpleDataset = originalData.getClassDatasets().at(classEntry.first);
