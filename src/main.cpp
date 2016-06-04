@@ -28,7 +28,7 @@ static struct {
     int classCol = 5;
     double radius = 0.5;
     double epsilon = 0.1;
-    string knn = "3+";
+    string knn = "5+";
     int minkowski = 2;
     bool verbose = false;
 } userParams;
@@ -153,7 +153,6 @@ void calculate(CrossValidationData* data) {
 
         GranuleSetPtr granuleSetPtr = calculateGranules(trainSet);
         for (CoveringStrategyPtr strategyPtr : strategies) {
-            cout << strategyPtr->getName() << endl;
             GranuleSetPtr covering = selectGranulesForCovering(granuleSetPtr, strategyPtr);
             DatasetPtr reflection = createGranularReflection(trainSet, covering);
 
@@ -189,7 +188,7 @@ GranuleSetPtr calculateGranules(const Dataset &trainSet) {
 }
 
 GranuleSetPtr selectGranulesForCovering(GranuleSetPtr granuleSetPtr, CoveringStrategyPtr strategyPtr) {
-    cout << "Selecting granules for covering..." << endl;
+    cout << "Selecting granules for covering using " << strategyPtr->getName() << "..." << endl;
     GranuleSetPtr covering = strategyPtr->selectGranules(*granuleSetPtr);
     if(userParams.verbose) {
         cout << (*covering) << endl;
