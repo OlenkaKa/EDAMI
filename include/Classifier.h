@@ -18,7 +18,7 @@ private:
     bool knnPlus_;
 
     // table of distances consisting of pairs class-distance
-    typedef std::pair<std::string, double> DistanceElem;
+    typedef std::pair<std::string, long double> DistanceElem;
     typedef std::list<DistanceElem> Distances;
 
     // counting votes and determining the winner class
@@ -36,8 +36,8 @@ private:
     void removeOverflowPlus_(Distances& distances) const;
 
     // calculating distance between rows
-    double distance_(const RowPtr& r1, const RowPtr& r2) const;
-    static double difference_(const Attribute& a1, const Attribute& a2);
+    long double distance_(const RowPtr& r1, const RowPtr& r2) const;
+    static long double difference_(const Attribute& a1, const Attribute& a2);
 };
 
 #endif /* EDAMI_CLASSIFIER_H */

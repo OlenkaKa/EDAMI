@@ -69,22 +69,22 @@ string Classifier::vote_(const Distances& distances) {
 }
 
 void Classifier::addNewDistance_(Distances& distances, const DistanceElem& distanceElem) {
-    bool insterted = false;
+    bool inserted = false;
     for (auto it = distances.begin(); it != distances.end(); ++it) {
         if (distanceElem.second < it->second) {
             distances.insert(it, distanceElem);
-            insterted = true;
+            inserted = true;
             break;
         }
     }
-    if (!insterted)
+    if (!inserted)
         distances.push_back(distanceElem);
 }
 
 void Classifier::setRangeOfLastDistance_(Distances& distances,
         Distances::iterator& start, Distances::iterator& end) const {
     start = distances.begin();
-    for (int i = 0; i < knnNumber_ && start != distances.end(); ++i) {
+    for (int i = 1; i < knnNumber_ && start != distances.end(); ++i) {
         ++start;
     }
 
@@ -107,7 +107,7 @@ void Classifier::removeOverflowEqual_(Distances& distances) const {
         ++remainIt;
 
     distances.erase(startIt, remainIt);
-    distances.erase(++remainIt, endIt);
+    distances.erase(++remainIt, distances.end());
 }
 
 void Classifier::removeOverflowPlus_(Distances& minDistances) const {
@@ -119,24 +119,24 @@ void Classifier::removeOverflowPlus_(Distances& minDistances) const {
     minDistances.erase(endIt, minDistances.end());
 }
 
-double Classifier::distance_(const RowPtr& r1, const RowPtr& r2) const {
+long double Classifier::distance_(const RowPtr& r1, const RowPtr& r2) const {
     if (r1->size() != r2->size())
         throw runtime_error("Rows size not equal.");
-    long double sum = 0;
+    long double sum = 0L;
     for (int i = 0; i < r1->size(); ++i) {
         sum += pow(difference_((*r1)[i], (*r2)[i]), minkowskiParam_);
     }
-    return pow(sum, -minkowskiParam_);
+    return abs(sum) < 0.00000000000001 ? 0L : pow(sum, 1.0/minkowskiParam_);
 }
 
-double Classifier::difference_(const Attribute& a1, const Attribute& a2) {
+long double Classifier::difference_(const Attribute& a1, const Attribute& a2) {
     if (a1.getType() != a2.getType())
         throw runtime_error("Different types of attributes in the same column.");
     switch (a1.getType()) {
         case Attribute::NOMINAL:
             if (get<string>(a1.getValue()) == get<string>(a2.getValue()))
-                return 1;
-            return 0;
+                return 0L;
+            return 1L;
         case Attribute::NUMERICAL:
             return abs(get<double>(a1.getValue()) - get<double>(a2.getValue()));
     }
