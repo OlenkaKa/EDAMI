@@ -59,6 +59,8 @@ GranuleSetPtr selectGranulesForCovering(GranuleSetPtr granuleSetPtr, CoveringStr
 DatasetPtr createGranularReflection(const Dataset &trainSet, GranuleSetPtr covering);
 void testClassifier(const Classifier& classifier, const Dataset& testSet, ClassificationInfo& info);
 
+const int LINE_WIDTH = 100;
+
 int main(int argc, char **argv) {
     // getting parameters
     po::options_description description("Usage");
@@ -96,14 +98,14 @@ int main(int argc, char **argv) {
 
     // performing main task
     cout << endl << endl
-         << "=============================" << endl
+         << string(LINE_WIDTH, '=') << endl
          << "     Creating classifiers"     << endl
          << " * file name: "                << userParams.fileName << endl
          << " * radius: "                   << userParams.radius << endl
          << " * epsilon: "                  << userParams.epsilon << endl
          << " * knn version: "              << userParams.knn << endl
          << " * minkowski parameter: "      << userParams.minkowski << endl
-         << "=============================" << endl << endl;
+         << string(LINE_WIDTH, '=') << endl << endl;
 
     Dataset dataset(userParams.fileName, userParams.classCol, userParams.separator);
     if(userParams.verbose) {
@@ -129,9 +131,9 @@ void calculate(CrossValidationData* data) {
     int numberOfPairs = data->numberOfPairs();
 
     cout << endl << endl
-         << "=============================" << endl
+         << string(LINE_WIDTH, '=') << endl
          << "   Cross-validation: k = "     << numberOfPairs << endl
-         << "=============================" << endl << endl;
+         << string(LINE_WIDTH, '=') << endl << endl;
 
     list<CoveringStrategyPtr> strategies = { CoveringStrategyPtr(new MinimalSizeStrategy()),
                                              CoveringStrategyPtr(new AverageSizeStrategy()),
@@ -152,9 +154,9 @@ void calculate(CrossValidationData* data) {
     for (int i = 0; i < numberOfPairs; ++i) {
         if (userParams.verbose) {
             cout << endl
-                 << "-----------------------------" << endl
+                 << string(LINE_WIDTH, '-') << endl
                  << "Iteration " << i+1 << " from " << numberOfPairs << endl
-                 << "-----------------------------" << endl;
+                 << string(LINE_WIDTH, '-') << endl;
         }
 
         // preparing train and test sets
@@ -187,11 +189,15 @@ void calculate(CrossValidationData* data) {
     
     // show results
     for(auto entry : infoMap) {
-        cout << "Strategy: " << entry.first << endl;
-        cout << " * Accuracy: " << entry.second.getAccuracy() << endl;
+        cout << string(LINE_WIDTH, '-') << endl
+             << "  Strategy: " << entry.first << endl
+             << string(LINE_WIDTH, '-') << endl;
+        
         cout << " * Time of classification: " << entry.second.getTime() << endl;
+        cout << " * Accuracy: " << entry.second.getAccuracy() << endl;
+        cout << " * Confusion matrix: " << endl << entry.second.getConfusionMatrix();
 
-        cout << " * Last classifier size: " << endl;
+        cout << " * Example classifier size: " << endl;
         for (auto &size: entry.second.getClassifierSize()) {
             cout << "    -- class " << size.first << ": " << size.second << endl;
         }

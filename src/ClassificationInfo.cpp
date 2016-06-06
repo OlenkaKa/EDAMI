@@ -10,6 +10,7 @@ void ClassificationInfo::addResults(const string& actualClass, const list<string
     correct_ += count_if(classifiedClassed.begin(), classifiedClassed.end(),
                          [&actualClass](const string& cls){ return actualClass == cls; });
     total_ += classifiedClassed.size();
+    matrix_.addResults(actualClass, classifiedClassed);
 }
 
 void ClassificationInfo::addTime(double secs) {
@@ -28,6 +29,10 @@ double ClassificationInfo::getAccuracy() const {
 
 double ClassificationInfo::getTime() const {
     return time_;
+}
+
+const ConfusionMatrix& ClassificationInfo::getConfusionMatrix() const {
+    return matrix_;
 }
 
 const map<std::string, int>& ClassificationInfo::getClassifierSize() const {

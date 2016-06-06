@@ -25,6 +25,7 @@ ADD_EXECUTABLE (main
         GranuleSizeStrategy.cpp
         DatasetInfo.cpp
         DatasetInfoProvider.cpp
+        ConfusionMatrix.cpp
         ClassificationInfo.cpp
 )
 
