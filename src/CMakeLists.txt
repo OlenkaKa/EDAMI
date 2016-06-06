@@ -25,6 +25,7 @@ ADD_EXECUTABLE (main
         GranuleSizeStrategy.cpp
         DatasetInfo.cpp
         DatasetInfoProvider.cpp
-        ClassificationQuality.cpp)
+        ClassificationInfo.cpp
+)
 
 TARGET_LINK_LIBRARIES(main ${Boost_LIBRARIES})

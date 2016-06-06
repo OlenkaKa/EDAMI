@@ -7,12 +7,11 @@
 using namespace std;
 using namespace boost;
 
-static const char SEPARATOR = ',';
 
 Dataset::Dataset() {
 }
 
-Dataset::Dataset(const string& fileName, int classCol) {
+Dataset::Dataset(const string& fileName, int classCol, char separator) {
     ifstream file;
     string line;
     file.open(fileName);
@@ -30,7 +29,7 @@ Dataset::Dataset(const string& fileName, int classCol) {
         
         // values in row before class attribute
         for (int i = 0; i < classCol; ++i) {
-            if (!getline(lineStream, value, SEPARATOR))
+            if (!getline(lineStream, value, separator))
                 throw invalid_argument("Cannot read columns before class column.");
             if(datasetInfo) {
                 row->push_back(Attribute::createAttribute(value, datasetInfo->getColumnType(i)));
@@ -40,7 +39,7 @@ Dataset::Dataset(const string& fileName, int classCol) {
         }
         
         // get class
-        if (!getline(lineStream, cls, SEPARATOR))
+        if (!getline(lineStream, cls, separator))
             throw invalid_argument("Cannot read class column.");
         if (classDatasets_.find(cls) == classDatasets_.end()) {
             classDatasets_[cls] = SimpleDataset();
@@ -48,7 +47,7 @@ Dataset::Dataset(const string& fileName, int classCol) {
         
         // remaining values from row
         int idx = classCol + 1;
-        while (getline(lineStream, value, SEPARATOR)) {
+        while (getline(lineStream, value, separator)) {
             if(datasetInfo) {
                 row->push_back(Attribute::createAttribute(value, datasetInfo->getColumnType(idx)));
             } else {

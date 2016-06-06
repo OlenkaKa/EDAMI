@@ -9,7 +9,7 @@
 class Dataset {
 public:
     Dataset();
-    Dataset(const std::string& fileName, int classCol);
+    Dataset(const std::string& fileName, int classCol, char separator);
     void addClass(const std::string& cls, const SimpleDataset& dataset);
     void addRow(const std::string& cls, const RowPtr& row);
     const std::map<std::string, SimpleDataset>& getClassDatasets() const;

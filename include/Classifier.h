@@ -10,6 +10,7 @@ public:
     Classifier(const Dataset& dataset, const std::string& knn, int minkowskiParam);
     std::string classify(const RowPtr& row) const;
     void classify(const SimpleDataset& dataset, std::list<std::string>& result) const;
+    const Dataset& getDataset() const;
 
 private:
     Dataset dataset_;

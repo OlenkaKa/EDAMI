@@ -42,6 +42,10 @@ void Classifier::classify(const SimpleDataset& dataset, list<string>& result) co
     }
 }
 
+const Dataset& Classifier::getDataset() const {
+    return dataset_;
+}
+
 
 // private methods
 

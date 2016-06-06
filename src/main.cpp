@@ -13,8 +13,10 @@
 #include <fstream>
 #include <MinimalSizeStrategy.h>
 #include <MaximalSizeStrategy.h>
-#include <ClassificationQuality.h>
+#include "ClassificationInfo.h"
 #include <memory>
+#include <ctime>
+
 
 using namespace std;
 using namespace boost;
@@ -26,6 +28,7 @@ namespace po = boost::program_options;
 static struct {
     string fileName;
     int classCol = 5;
+    char separator = ',';
     double radius = 0.5;
     double epsilon = 0.1;
     string knn = "5+";
@@ -54,6 +57,7 @@ GranuleSetPtr calculateGranules(const Dataset &trainSet);
 typedef std::shared_ptr<CoveringFindingStrategy> CoveringStrategyPtr;
 GranuleSetPtr selectGranulesForCovering(GranuleSetPtr granuleSetPtr, CoveringStrategyPtr strategyPtr);
 DatasetPtr createGranularReflection(const Dataset &trainSet, GranuleSetPtr covering);
+void testClassifier(const Classifier& classifier, const Dataset& testSet, ClassificationInfo& info);
 
 int main(int argc, char **argv) {
     // getting parameters
@@ -62,8 +66,9 @@ int main(int argc, char **argv) {
             ("help,h", "print help message")
             ("file,f", po::value<string>(&userParams.fileName)->required()->notifier(&checkIfFileExists), "name of file with dataset (required)")
             ("class,c", po::value<int>(&userParams.classCol), "class column index in dataset")
+            ("separator,s", po::value<char>(&userParams.separator), "attribute separator in dataset file")
             ("radius,r", po::value<double>(&userParams.radius), "radius parameter used in granular computing")
-            ("eps,e", po::value<double>(&userParams.epsilon), "epsilon parameter for numerical attributes in granular computing")
+            ("epsilon,e", po::value<double>(&userParams.epsilon), "epsilon parameter for numerical attributes in granular computing")
             ("knn,k", po::value<string>(&userParams.knn)->notifier(&verifyKnn), "k nearest neighbourhood parameter in format \"<num>\" or \"<num>+\"")
             ("mink,m", po::value<int>(&userParams.minkowski), "minkowski parameter used in calculating distance")
             ("verbose,v", "print more output");
@@ -90,17 +95,25 @@ int main(int argc, char **argv) {
     }
 
     // performing main task
-    cout << "File name: "
-         << userParams.fileName << endl << endl;
-    Dataset dataset(userParams.fileName, userParams.classCol);
+    cout << endl << endl
+         << "=============================" << endl
+         << "     Creating classifiers"     << endl
+         << " * file name: "                << userParams.fileName << endl
+         << " * radius: "                   << userParams.radius << endl
+         << " * epsilon: "                  << userParams.epsilon << endl
+         << " * knn version: "              << userParams.knn << endl
+         << " * minkowski parameter: "      << userParams.minkowski << endl
+         << "=============================" << endl << endl;
+
+    Dataset dataset(userParams.fileName, userParams.classCol, userParams.separator);
     if(userParams.verbose) {
         cout << "Dataset:" << endl
              << dataset << endl << endl;
     }
 
-    int subsetsNum[] = {2, 3};
+    int kCrossValidation[] = {5, 10};
     CrossValidationData* data;
-    for (int k: subsetsNum) {
+    for (int k: kCrossValidation) {
         data = new SimpleCrossValidation(dataset, k);
         calculate(data);
         delete data;
@@ -108,10 +121,6 @@ int main(int argc, char **argv) {
     data = new LeaveOneOutValidation(dataset);
     calculate(data);
     delete data;
-
-#ifdef _WIN32
-    system("pause");
-#endif
 
     return 0;
 }
@@ -121,24 +130,34 @@ void calculate(CrossValidationData* data) {
 
     cout << endl << endl
          << "=============================" << endl
-         << "     Creating classifiers"     << endl
-         << " Parameters:"                  << endl
-         << " * cross-validation: k = " << numberOfPairs << endl
-         << "=============================" << endl;
+         << "   Cross-validation: k = "     << numberOfPairs << endl
+         << "=============================" << endl << endl;
 
     list<CoveringStrategyPtr> strategies = { CoveringStrategyPtr(new MinimalSizeStrategy()),
                                              CoveringStrategyPtr(new AverageSizeStrategy()),
                                              CoveringStrategyPtr(new MaximalSizeStrategy()) };
-    map<string, ClassificationQuality> qualityMap;
+    
+    // creating classification info map
+    map<string, ClassificationInfo> infoMap;
+    
+    const string NO_STRATEGY = "Original dataset";
+    infoMap[NO_STRATEGY] = ClassificationInfo();
+    
     for(CoveringStrategyPtr strPtr : strategies) {
-        qualityMap[strPtr->getName()] = ClassificationQuality();
+        infoMap[strPtr->getName()] = ClassificationInfo();
     }
-    for (int i = 0; i < data->numberOfPairs(); ++i) {
-        cout << endl
-             << "-----------------------------" << endl
-             << "Iteration " << i+1 << " from " << numberOfPairs << endl
-             << "-----------------------------" << endl;
 
+    
+    // creating classifiers and test for each cross-validation data
+    for (int i = 0; i < numberOfPairs; ++i) {
+        if (userParams.verbose) {
+            cout << endl
+                 << "-----------------------------" << endl
+                 << "Iteration " << i+1 << " from " << numberOfPairs << endl
+                 << "-----------------------------" << endl;
+        }
+
+        // preparing train and test sets
         Dataset trainSet, testSet;
         NormalizationParams normalization;
         data->getData(i, trainSet, testSet, normalization);
@@ -151,33 +170,43 @@ void calculate(CrossValidationData* data) {
             cout << trainSet << endl;
         }
 
+        // create and test classifiers for granule strategies
         GranuleSetPtr granuleSetPtr = calculateGranules(trainSet);
         for (CoveringStrategyPtr strategyPtr : strategies) {
             GranuleSetPtr covering = selectGranulesForCovering(granuleSetPtr, strategyPtr);
             DatasetPtr reflection = createGranularReflection(trainSet, covering);
 
-            cout << "CLASSIFICATION:" << endl;
             Classifier classifier((*reflection), userParams.knn, userParams.minkowski);
-            for (auto &classDataset: testSet.getClassDatasets()) {
-                list<string> result;
-                classifier.classify(classDataset.second, result);
-                cout << "-- class: " << classDataset.first << endl;
-                if(userParams.verbose) {
-                    for (auto &cls: result)
-                        cout << cls << endl;
-                }
-                qualityMap.at(strategyPtr->getName()).add(classDataset.first, result);
-            }
-            cout << endl;
+            testClassifier(classifier, testSet, infoMap.at(strategyPtr->getName()));
         }
+        
+        // create and test classifier for original train dataset
+        Classifier classifier(trainSet, userParams.knn, userParams.minkowski);
+        testClassifier(classifier, testSet, infoMap.at(NO_STRATEGY));
     }
-    for(auto entry : qualityMap) {
-        cout << "Strategy: " << entry.first << " Accuracy: " << entry.second.getAccuracy() << endl;
+    
+    // show results
+    for(auto entry : infoMap) {
+        cout << "Strategy: " << entry.first << endl;
+        cout << " * Accuracy: " << entry.second.getAccuracy() << endl;
+        cout << " * Time of classification: " << entry.second.getTime() << endl;
+
+        cout << " * Last classifier size: " << endl;
+        for (auto &size: entry.second.getClassifierSize()) {
+            cout << "    -- class " << size.first << ": " << size.second << endl;
+        }
+        cout << "    -- TOTAL: "
+             << accumulate(std::begin(entry.second.getClassifierSize()), std::end(entry.second.getClassifierSize()),
+                0, [](const int sum, const pair<string, int>& elem) { return sum + elem.second; }) << endl;
+        
+        cout << endl;
     }
 }
 
 GranuleSetPtr calculateGranules(const Dataset &trainSet) {
-    cout << "Calculating all granules..." << endl;
+    if (userParams.verbose) {
+        cout << "Calculating all granules..." << endl;
+    }
     GranuleCalculator calculator;
     GranuleCalculator::Params params(userParams.epsilon, userParams.radius);
     GranuleSetPtr granuleSetPtr = calculator.calculateGranules(trainSet, params);
@@ -188,7 +217,9 @@ GranuleSetPtr calculateGranules(const Dataset &trainSet) {
 }
 
 GranuleSetPtr selectGranulesForCovering(GranuleSetPtr granuleSetPtr, CoveringStrategyPtr strategyPtr) {
-    cout << "Selecting granules for covering using " << strategyPtr->getName() << "..." << endl;
+    if (userParams.verbose) {
+        cout << "Selecting granules for covering using " << strategyPtr->getName() << "..." << endl;
+    }
     GranuleSetPtr covering = strategyPtr->selectGranules(*granuleSetPtr);
     if(userParams.verbose) {
         cout << (*covering) << endl;
@@ -197,7 +228,9 @@ GranuleSetPtr selectGranulesForCovering(GranuleSetPtr granuleSetPtr, CoveringStr
 }
 
 DatasetPtr createGranularReflection(const Dataset &trainSet, GranuleSetPtr covering) {
-    cout << "Creating granular reflection..." << endl;
+    if (userParams.verbose) {
+        cout << "Creating granular reflection..." << endl;
+    }
     GranularReflectionCreator creator;
     DatasetPtr reflection = creator.createGranularReflection(trainSet, *covering);
     if(userParams.verbose) {
@@ -205,3 +238,23 @@ DatasetPtr createGranularReflection(const Dataset &trainSet, GranuleSetPtr cover
     }
     return reflection;
 }
+
+void testClassifier(const Classifier& classifier, const Dataset& testSet, ClassificationInfo& info) {
+    info.setClassifierSize(classifier);
+    for (auto &classDataset: testSet.getClassDatasets()) {
+        list<string> result;
+
+        clock_t beginTime = clock();
+        classifier.classify(classDataset.second, result);
+        clock_t endTime = clock();
+        info.addTime(double(endTime - beginTime) / CLOCKS_PER_SEC);
+
+        if(userParams.verbose) {
+            cout << "-- class: " << classDataset.first << endl;
+            for (auto &cls: result)
+                cout << cls << endl;
+        }
+        info.addResults(classDataset.first, result);
+    }
+}
+
