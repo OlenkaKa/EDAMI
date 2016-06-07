@@ -15,12 +15,15 @@
 #include <MaximalSizeStrategy.h>
 #include "ClassificationInfo.h"
 #include <memory>
+#include <numeric>
 #include <ctime>
 
 
 using namespace std;
 using namespace boost;
 namespace po = boost::program_options;
+
+const int LINE_WIDTH = 70;
 
 /**
  * Program parameters given by user
@@ -34,6 +37,7 @@ static struct {
     string knn = "5+";
     int minkowski = 2;
     bool verbose = false;
+    bool disableLeaveOneOut = false;
 } userParams;
 
 void verifyKnn(const string& str) {
@@ -59,7 +63,6 @@ GranuleSetPtr selectGranulesForCovering(GranuleSetPtr granuleSetPtr, CoveringStr
 DatasetPtr createGranularReflection(const Dataset &trainSet, GranuleSetPtr covering);
 void testClassifier(const Classifier& classifier, const Dataset& testSet, ClassificationInfo& info);
 
-const int LINE_WIDTH = 100;
 
 int main(int argc, char **argv) {
     // getting parameters
@@ -72,8 +75,9 @@ int main(int argc, char **argv) {
             ("radius,r", po::value<double>(&userParams.radius), "radius parameter used in granular computing")
             ("epsilon,e", po::value<double>(&userParams.epsilon), "epsilon parameter for numerical attributes in granular computing")
             ("knn,k", po::value<string>(&userParams.knn)->notifier(&verifyKnn), "k nearest neighbourhood parameter in format \"<num>\" or \"<num>+\"")
-            ("mink,m", po::value<int>(&userParams.minkowski), "minkowski parameter used in calculating distance")
-            ("verbose,v", "print more output");
+            ("minkowski,m", po::value<int>(&userParams.minkowski), "minkowski parameter used in calculating distance")
+            ("verbose,v", "print more output")
+            ("disable-leave-one-out,d", "disable Leave-one-out validation");
 
     po::variables_map vm;
     try {
@@ -84,6 +88,9 @@ int main(int argc, char **argv) {
         }
         if (vm.count("verbose")) {
             userParams.verbose = true;
+        }
+        if (vm.count("disable-leave-one-out")) {
+            userParams.disableLeaveOneOut = true;
         }
         po::notify(vm);
     } catch (const std::exception& e) {
@@ -99,7 +106,7 @@ int main(int argc, char **argv) {
     // performing main task
     cout << endl << endl
          << string(LINE_WIDTH, '=') << endl
-         << "     Creating classifiers"     << endl
+         << "     EDAMI project"     << endl
          << " * file name: "                << userParams.fileName << endl
          << " * radius: "                   << userParams.radius << endl
          << " * epsilon: "                  << userParams.epsilon << endl
@@ -120,9 +127,11 @@ int main(int argc, char **argv) {
         calculate(data);
         delete data;
     }
-    data = new LeaveOneOutValidation(dataset);
-    calculate(data);
-    delete data;
+    if (!userParams.disableLeaveOneOut) {
+        data = new LeaveOneOutValidation(dataset);
+        calculate(data);
+        delete data;
+    }
 
     return 0;
 }

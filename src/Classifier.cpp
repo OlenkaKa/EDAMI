@@ -9,6 +9,8 @@
 using namespace boost;
 using namespace std;
 
+const string Classifier::MULTIPLE_CLASSES = "_MORE";
+
 Classifier::Classifier(const Dataset& dataset, const std::string& knn, int minkowskiParam):
         dataset_(dataset), minkowskiParam_(minkowskiParam) {
     
@@ -59,17 +61,20 @@ string Classifier::vote_(const Distances& distances) {
             ++votes[entry.first];
     }
     
-    // find the leader
-    // TODO: what about multiple leaders?
-    string result;
+    // find the winner class
+    list<string> result;
     int maxVotes = 0;
     for (auto &entry: votes) {
         if (entry.second > maxVotes) {
-            result = entry.first;
+            result.clear();
+            result.push_back(entry.first);
             maxVotes = entry.second;
         }
+        else if (entry.second == maxVotes) {
+            result.push_back(entry.first);
+        }
     }
-    return result;
+    return result.size() == 1 ? result.front() : MULTIPLE_CLASSES;
 }
 
 void Classifier::addNewDistance_(Distances& distances, const DistanceElem& distanceElem) {
@@ -130,7 +135,7 @@ long double Classifier::distance_(const RowPtr& r1, const RowPtr& r2) const {
     for (int i = 0; i < r1->size(); ++i) {
         sum += pow(difference_((*r1)[i], (*r2)[i]), minkowskiParam_);
     }
-    return abs(sum) < 0.00000000000001 ? 0L : pow(sum, 1.0/minkowskiParam_);
+    return abs(sum) < 0.00000000000001 ? 0.0 : pow(sum, 1.0 / minkowskiParam_);
 }
 
 long double Classifier::difference_(const Attribute& a1, const Attribute& a2) {
@@ -139,8 +144,8 @@ long double Classifier::difference_(const Attribute& a1, const Attribute& a2) {
     switch (a1.getType()) {
         case Attribute::NOMINAL:
             if (get<string>(a1.getValue()) == get<string>(a2.getValue()))
-                return 0L;
-            return 1L;
+                return 0.0;
+            return 1.0;
         case Attribute::NUMERICAL:
             return abs(get<double>(a1.getValue()) - get<double>(a2.getValue()));
     }

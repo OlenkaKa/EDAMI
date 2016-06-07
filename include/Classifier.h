@@ -3,10 +3,12 @@
 
 #include "Dataset.h"
 #include <list>
-
+#include <string>
 
 class Classifier {
 public:
+    static const std::string MULTIPLE_CLASSES;
+
     Classifier(const Dataset& dataset, const std::string& knn, int minkowskiParam);
     std::string classify(const RowPtr& row) const;
     void classify(const SimpleDataset& dataset, std::list<std::string>& result) const;
