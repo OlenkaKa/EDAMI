@@ -202,11 +202,11 @@ void calculate(CrossValidationData* data) {
              << "  Strategy: " << entry.first << endl
              << string(LINE_WIDTH, '-') << endl;
         
-        cout << " * Time of classification: " << entry.second.getTime() << endl;
+        cout << " * Time of classification: " << entry.second.getTime() << " [s]" << endl;
         cout << " * Accuracy: " << entry.second.getAccuracy() << endl;
         cout << " * Confusion matrix: " << endl << entry.second.getConfusionMatrix();
 
-        cout << " * Example classifier size: " << endl;
+        cout << " * Number of granules in classifier (number of rows in granular reflection): " << endl;
         for (auto &size: entry.second.getClassifierSize()) {
             cout << "    -- class " << size.first << ": " << size.second << endl;
         }
