@@ -17,6 +17,7 @@
 #include <memory>
 #include <numeric>
 #include <ctime>
+#include <FileWriter.h>
 
 
 using namespace std;
@@ -24,6 +25,7 @@ using namespace boost;
 namespace po = boost::program_options;
 
 const int LINE_WIDTH = 70;
+const string NO_FILE = "---";
 
 /**
  * Program parameters given by user
@@ -38,7 +40,10 @@ static struct {
     int minkowski = 2;
     bool verbose = false;
     bool disableLeaveOneOut = false;
+    string outputFile = NO_FILE;
 } userParams;
+
+FileWriter *fileWriter = nullptr;
 
 void verifyKnn(const string& str) {
     const regex reg("[0-9]+\\+?");
@@ -77,7 +82,8 @@ int main(int argc, char **argv) {
             ("knn,k", po::value<string>(&userParams.knn)->notifier(&verifyKnn), "k nearest neighbourhood parameter in format \"<num>\" or \"<num>+\"")
             ("minkowski,m", po::value<int>(&userParams.minkowski), "minkowski parameter used in calculating distance")
             ("verbose,v", "print more output")
-            ("disable-leave-one-out,d", "disable Leave-one-out validation");
+            ("disable-leave-one-out,d", "disable Leave-one-out validation")
+            ("output-file,o", po::value<string>(&userParams.outputFile), "name of file to which results will be exported in csv format");
 
     po::variables_map vm;
     try {
@@ -101,6 +107,17 @@ int main(int argc, char **argv) {
         cout << "Invalid arguments!" << endl;
         cout << description << endl;
         return 2;
+    }
+
+    if(userParams.outputFile != NO_FILE) {
+        fileWriter = new FileWriter(userParams.outputFile);
+        fileWriter->addString("Dataset")
+                ->addString("Radius")->addString("Epsilon")
+                ->addString("kNN")->addString("Minkowski")
+                ->addString("k (from k-fold CV)")->addString("Granule selection strategy")
+                ->addString("Classification time [s]")->addString("Accuracy")
+                ->addString("Number of granules in classifier")
+                ->nextLine();
     }
 
     // performing main task
@@ -133,6 +150,10 @@ int main(int argc, char **argv) {
         delete data;
     }
 
+    if(fileWriter != nullptr) {
+        fileWriter->writeToFile();
+        delete fileWriter;
+    }
     return 0;
 }
 
@@ -210,11 +231,19 @@ void calculate(CrossValidationData* data) {
         for (auto &size: entry.second.getClassifierSize()) {
             cout << "    -- class " << size.first << ": " << size.second << endl;
         }
-        cout << "    -- TOTAL: "
-             << accumulate(std::begin(entry.second.getClassifierSize()), std::end(entry.second.getClassifierSize()),
-                0, [](const int sum, const pair<string, int>& elem) { return sum + elem.second; }) << endl;
-        
+        int totalSize = accumulate(std::begin(entry.second.getClassifierSize()), std::end(entry.second.getClassifierSize()),
+                                   0, [](const int sum, const pair<string, int>& elem) { return sum + elem.second; });
+        cout << "    -- TOTAL: " << totalSize << endl;
         cout << endl;
+
+        if(fileWriter != nullptr) {
+            fileWriter->addString(userParams.fileName)
+                    ->addDouble(userParams.radius)->addDouble(userParams.epsilon)
+                    ->addString(userParams.knn)->addInt(userParams.minkowski)
+                    ->addInt(numberOfPairs)->addString(entry.first)
+                    ->addDouble(entry.second.getTime())->addDouble(entry.second.getAccuracy())->addInt(totalSize)
+                    ->nextLine();
+        }
     }
 }
 
