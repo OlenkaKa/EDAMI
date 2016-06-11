@@ -13,3 +13,6 @@ wget -P "$OUTPUT_DIR" http://archive.ics.uci.edu/ml/machine-learning-databases/w
 
 # http://archive.ics.uci.edu/ml/datasets/Statlog+%28Heart%29
 wget -P "$OUTPUT_DIR" http://archive.ics.uci.edu/ml/machine-learning-databases/statlog/heart/heart.dat
+
+# http://archive.ics.uci.edu/ml/datasets/Car+Evaluation
+wget -P "$OUTPUT_DIR" http://archive.ics.uci.edu/ml/machine-learning-databases/car/car.data

@@ -27,6 +27,7 @@ ADD_EXECUTABLE (main
         DatasetInfoProvider.cpp
         ConfusionMatrix.cpp
         ClassificationInfo.cpp
-        FileWriter.cpp)
+        FileWriter.cpp
+        NumberStats.cpp)
 
 TARGET_LINK_LIBRARIES(main ${Boost_LIBRARIES})

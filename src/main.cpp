@@ -18,6 +18,7 @@
 #include <numeric>
 #include <ctime>
 #include <FileWriter.h>
+#include <NumberStats.h>
 
 
 using namespace std;
@@ -227,21 +228,29 @@ void calculate(CrossValidationData* data) {
         cout << " * Accuracy: " << entry.second.getAccuracy() << endl;
         cout << " * Confusion matrix: " << endl << entry.second.getConfusionMatrix();
 
-        cout << " * Number of granules in classifier (number of rows in granular reflection): " << endl;
-        for (auto &size: entry.second.getClassifierSize()) {
-            cout << "    -- class " << size.first << ": " << size.second << endl;
+        cout << " * Number of granules in classifier per class: " << endl;
+        if(userParams.verbose) {
+            for (auto &size: entry.second.getClassifierSize()) {
+                cout << "    -- class " << size.first << ": " << size.second << endl;
+            }
+            cout << endl;
         }
-        int totalSize = accumulate(std::begin(entry.second.getClassifierSize()), std::end(entry.second.getClassifierSize()),
-                                   0, [](const int sum, const pair<string, int>& elem) { return sum + elem.second; });
-        cout << "    -- TOTAL: " << totalSize << endl;
-        cout << endl;
+        NumberStats stats;
+        for (auto &size: entry.second.getClassifierSize()) {
+            stats.include(size.second);
+        }
+        cout << "    -- Min number: " << stats.getMinValue() << endl;
+        cout << "    -- Max number: " << stats.getMaxValue() << endl;
+        cout << "    -- Average number: " << stats.getAverageValue() << endl;
+        cout << "    -- Total: " << stats.getSum() << endl;
+        cout << "    -- Standard deviation: " << stats.getStandardDeviation() << endl << endl;
 
         if(fileWriter != nullptr) {
             fileWriter->addString(userParams.fileName)
                     ->addDouble(userParams.radius)->addDouble(userParams.epsilon)
                     ->addString(userParams.knn)->addInt(userParams.minkowski)
                     ->addInt(numberOfPairs)->addString(entry.first)
-                    ->addDouble(entry.second.getTime())->addDouble(entry.second.getAccuracy())->addInt(totalSize)
+                    ->addDouble(entry.second.getTime())->addDouble(entry.second.getAccuracy())->addInt(stats.getSum())
                     ->nextLine();
         }
     }
