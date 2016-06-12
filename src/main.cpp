@@ -68,7 +68,7 @@ typedef std::shared_ptr<CoveringFindingStrategy> CoveringStrategyPtr;
 GranuleSetPtr selectGranulesForCovering(GranuleSetPtr granuleSetPtr, CoveringStrategyPtr strategyPtr);
 DatasetPtr createGranularReflection(const Dataset &trainSet, GranuleSetPtr covering);
 void testClassifier(const Classifier& classifier, const Dataset& testSet, ClassificationInfo& info);
-
+void addColumnNamesToFile();
 
 int main(int argc, char **argv) {
     // getting parameters
@@ -112,13 +112,7 @@ int main(int argc, char **argv) {
 
     if(userParams.outputFile != NO_FILE) {
         fileWriter = new FileWriter(userParams.outputFile);
-        fileWriter->addString("Dataset")
-                ->addString("Radius")->addString("Epsilon")
-                ->addString("kNN")->addString("Minkowski")
-                ->addString("k (from k-fold CV)")->addString("Granule selection strategy")
-                ->addString("Classification time [s]")->addString("Accuracy")
-                ->addString("Number of granules in classifier")
-                ->nextLine();
+        addColumnNamesToFile();
     }
 
     // performing main task
@@ -156,6 +150,20 @@ int main(int argc, char **argv) {
         delete fileWriter;
     }
     return 0;
+}
+
+void addColumnNamesToFile() {
+    fileWriter->addString("Dataset")
+                ->addString("Radius")->addString("Epsilon")
+                ->addString("kNN")->addString("Minkowski")
+                ->addString("k (from k-fold CV)")->addString("Granule selection strategy")
+                ->addString("Classification time [s]")->addString("Accuracy")
+                ->addString("Total number of granules in classifier")
+                ->addString("Min num. of granules per class")
+                ->addString("Max num. of granules per class")
+                ->addString("Avg num. of granules per class")
+                ->addString("Std. deviation from numbers of granules per class")
+                ->nextLine();
 }
 
 void calculate(CrossValidationData* data) {
@@ -250,7 +258,12 @@ void calculate(CrossValidationData* data) {
                     ->addDouble(userParams.radius)->addDouble(userParams.epsilon)
                     ->addString(userParams.knn)->addInt(userParams.minkowski)
                     ->addInt(numberOfPairs)->addString(entry.first)
-                    ->addDouble(entry.second.getTime())->addDouble(entry.second.getAccuracy())->addInt(stats.getSum())
+                    ->addDouble(entry.second.getTime())->addDouble(entry.second.getAccuracy())
+                    ->addInt(stats.getSum())
+                    ->addInt(stats.getMinValue())
+                    ->addInt(stats.getMaxValue())
+                    ->addDouble(stats.getAverageValue())
+                    ->addDouble(stats.getStandardDeviation())
                     ->nextLine();
         }
     }
